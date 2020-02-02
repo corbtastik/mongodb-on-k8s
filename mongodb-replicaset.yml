@@ -1,0 +1,13 @@
+apiVersion: mongodb.com/v1
+kind: MongoDB
+metadata:
+  name: m0-replica-set
+  namespace: mongodb
+spec:
+  members: 3
+  version: 4.2.2-ent
+  type: ReplicaSet
+  opsManager:
+    configMapRef:
+      name: ops-manager-connection
+  credentials: om-main-user-credentials
