@@ -56,8 +56,8 @@ kube apply -f mongodb-nodeport.yml
 
 The MongoDB Enterprise Operator for Kubernetes allows devOps teams to:
 
-* Deploy and run MongoDB Ops Manager on K8s
-* Deploy MongoDB clusters on K8s
+* Deploy and run MongoDB Ops Manager on K8s  
+* Deploy MongoDB clusters on K8s  
 
 ### Initial setup
 
@@ -103,10 +103,14 @@ __step-4__
 
 Deploy MongoDB Ops Manager in a Pod as well as a 3 member MongoDB ReplicaSet for the Ops Manager application database.  Each startup time we vary based on Hardware and quota given to Minikube, however expect to wait 5-10 mins for everything to reach Running status.
 
+If you're on a macbook you'll know its working because the fans should be spinning.
+
 ```bash
 kube apply -f mongodb-ops-manager-1.yml
 # wait a few mins for the objects to create
-kube -n mongodb get pods        
+kube -n mongodb get om -w
+# should have these objects
+kube -n mongodb get pods -o wide  
 NAME                        READY  STATUS             RESTARTS  AGE
 mongodb-enterprise-operator 1/1    Running            0         62m
 ops-manager-0               1/1    Running            0         7m3s
@@ -124,7 +128,7 @@ Open MongoDB Ops Manager and login with the `ops-manager-admin-secret` creds abo
 
 ```bash
 # remember INTERNAL-IP
-kube -n mongodb -o wide
+kube -n mongodb get node -o wide
 # remember high-side NODE-PORT, should be something like 3xxxx
 kube -n mongodb get service ops-manager-svc-ext
 ```
@@ -151,25 +155,37 @@ Walk through the Ops Manager setup, accepting the defaults.  Once complete you'l
 
 ### Ops Manager User
 
+__step-8__
+
 ```txt
 # User > Account > Public API Access > Generate
 -------------------------------------------------
 Description: om-main-user-credentials
-API Key:     0b0b0759-f180-4bd5-8251-98f8498dcfee
+API Key:     e3d8f562-e9a7-439f-929f-c0c811506751
 ```
 
 ```bash
 kube create secret generic om-main-user-credentials \
-  --from-literal="user=corbett.martin@mongodb.com" \
-  --from-literal="publicApiKey=0b0b0759-f180-4bd5-8251-98f8498dcfee" \
+  --from-literal="user=opsman.admin@mongodb.com" \
+  --from-literal="publicApiKey=e3d8f562-e9a7-439f-929f-c0c811506751" \
   -n mongodb
 ```
+
+__step-9__
 
 ```bash
 kube create configmap ops-manager-connection \
   --from-literal="baseUrl=http://ops-manager-svc.mongodb.svc.cluster.local:8080" \
   --from-literal="projectName=Project0" \
   -n mongodb
+```
+
+__step-10__
+
+```bash
+kube apply -f mongodb-replicaset.yaml
+# wait for the 3 node replicaset to come up...
+kube get mdb -n mongodb -w
 ```
 
 ### Teardown
@@ -205,6 +221,13 @@ kube delete secret ops-manager-admin-secret
 
 ```bash
 kube config set-context --current --namespace=mongodb
+```
+
+```bash
+r=https://api.github.com/repos/machine-drivers/docker-machine-driver-vmware
+curl -LO $(curl -s $r/releases/latest | grep -o 'http.*darwin_amd64' | head -n1) \
+ && install docker-machine-driver-vmware_darwin_amd64 \
+  /usr/local/bin/docker-machine-driver-vmware
 ```
 
 

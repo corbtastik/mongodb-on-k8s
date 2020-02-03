@@ -1,0 +1,14 @@
+apiVersion: mongodb.com/v1
+kind: MongoDB
+metadata:
+  name: m0-standalone
+  namespace: mongodb
+spec:
+  version: 4.2.2-ent
+  type: Standalone
+  persistent: true
+  exposedExternally: true
+  credentials: om-main-user-credentials
+  opsManager:
+    configMapRef:
+      name: ops-manager-connection
