@@ -161,13 +161,13 @@ __step-8__
 # User > Account > Public API Access > Generate
 -------------------------------------------------
 Description: om-main-user-credentials
-API Key:     e3d8f562-e9a7-439f-929f-c0c811506751
+API Key:     0495b741-3aef-40d7-9ba0-5f3b96085c9c
 ```
 
 ```bash
 kube create secret generic om-main-user-credentials \
-  --from-literal="user=opsman.admin@mongodb.com" \
-  --from-literal="publicApiKey=e3d8f562-e9a7-439f-929f-c0c811506751" \
+  --from-literal="user=corbett.martin@mongodb.com" \
+  --from-literal="publicApiKey=0495b741-3aef-40d7-9ba0-5f3b96085c9c" \
   -n mongodb
 ```
 
@@ -183,7 +183,9 @@ kube create configmap ops-manager-connection \
 __step-10__
 
 ```bash
-kube apply -f mongodb-replicaset.yaml
+kube apply -f mongodb-m0-standalone.yaml
+# or kube apply -f mongodb-replicaset.yml
+# or kube apply -f mongodb-shared.yml
 # wait for the 3 node replicaset to come up...
 kube get mdb -n mongodb -w
 ```

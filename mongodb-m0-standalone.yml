@@ -4,7 +4,7 @@ metadata:
   name: m0-standalone
   namespace: mongodb
 spec:
-  version: 4.2.2-ent
+  version: 4.2.3-ent
   type: Standalone
   persistent: true
   exposedExternally: true
