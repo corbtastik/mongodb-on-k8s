@@ -1,13 +1,17 @@
 apiVersion: mongodb.com/v1
 kind: MongoDB
 metadata:
-  name: m0-replica-set
+  name: m2-sharded-cluster
   namespace: mongodb
 spec:
-  members: 3
-  version: 4.2.2-ent
-  type: ReplicaSet
+  shardCount: 2
+  mongodsPerShardCount: 3
+  mongosCount: 2
+  configServerCount: 3
+  version: 4.2.3-ent
   opsManager:
     configMapRef:
       name: ops-manager-connection
   credentials: om-main-user-credentials
+  type: ShardedCluster
+  persistent: true
