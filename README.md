@@ -7,53 +7,6 @@ __step-0__
 ./start.sh
 ```
 
-## MongoDB Community
-
-### Deploy Standalone
-
-```bash
-kube create secret generic mongodb-admin-creds \
-  --from-literal=username=main_user \
-  --from-literal=password=howdy
-kube apply -f mongodb-statefulset.yml
-kube apply -f mongodb-clusterip.yml
-```
-
-### Connect to Container Instance
-
-```bash
-kubectl exec -it mongodb-standalone-0 sh
-mongo admin -u main_user
-use todosdb
-db.createCollection('todos')
-db.todos.save({title: 'Make bacon pancakes', complete: true})
-db.todos.save({title: 'Eat bacon pancakes', complete: false})
-db.todos.save({title: 'Clean up kitchen', complete: false})
-db.todos.find({complete: true})
-```
-
-### Connect from local machine
-
-```bash
-kube apply -f mongodb-nodeport.yml
-kube get nodes -o wide # get INTERNAL-IP
-kube get service mongodb-nodeport -o wide # get NODE-PORT
-mongo "mongodb://INTERNAL-IP:NODE-PORT" --authenticationDatabase=admin --username=main_user
-```
-
-### Deploy standalone with external volume
-
-```bash
-kube create secret generic mongodb-admin-creds --from-literal=username=main_user --from-literal=password=howdy
-kube apply -f mongodb-storageclass.yml
-kube apply -f mongodb-persistent-volume.yml
-kube apply -f mongodb-statefulset-local.yml
-kube apply -f mongodb-clusterip.yml
-kube apply -f mongodb-nodeport.yml
-```
-
----
-
 The MongoDB Enterprise Operator for Kubernetes allows devOps teams to:
 
 * Deploy and run MongoDB Ops Manager on K8s  
@@ -92,7 +45,7 @@ __step-3__
 
 ```bash
 kube create secret generic ops-manager-admin-secret \
---from-literal=Username="opsman.admin@mongodb.com" \
+--from-literal=Username="admin@opsmanager.com" \
 --from-literal=Password="Passw0rd." \
 --from-literal=FirstName="Ops" \
 --from-literal=LastName="Manager" \
@@ -161,33 +114,133 @@ __step-8__
 # User > Account > Public API Access > Generate
 -------------------------------------------------
 Description: om-main-user-credentials
-API Key:     0495b741-3aef-40d7-9ba0-5f3b96085c9c
+API Key:     687242dd-d524-41b7-97db-e16987e6888d
 ```
 
 ```bash
-kube create secret generic om-main-user-credentials \
-  --from-literal="user=corbett.martin@mongodb.com" \
-  --from-literal="publicApiKey=0495b741-3aef-40d7-9ba0-5f3b96085c9c" \
+kubectl create secret generic om-main-user-credentials \
+  --from-literal="user=admin@opsmanager.com" \
+  --from-literal="publicApiKey=687242dd-d524-41b7-97db-e16987e6888d" \
   -n mongodb
 ```
 
 __step-9__
 
 ```bash
-kube create configmap ops-manager-connection \
+kubectl create configmap ops-manager-connection \
   --from-literal="baseUrl=http://ops-manager-svc.mongodb.svc.cluster.local:8080" \
   --from-literal="projectName=Project0" \
   -n mongodb
 ```
 
+### Deploy and Use MongoDB Standalone on Kubernetes
+
 __step-10__
 
 ```bash
-kube apply -f mongodb-m0-standalone.yaml
+kubectl apply -f mongodb-m0-standalone.yml
 # or kube apply -f mongodb-replicaset.yml
 # or kube apply -f mongodb-shared.yml
 # wait for the 3 node replicaset to come up...
-kube get mdb -n mongodb -w
+kubectl -n mongodb get mdb  -w
+```
+
+__step-11__
+
+Connect from your local machine to the standalone MongoDB instance
+
+```bash
+# get IP of master Kubernetes node (the only node in Minikube)
+minikube ip
+# get NodePort of m0-standalone-svc-external (31793 below)
+kubectl -n mongodb get services
+NAME                         TYPE        CLUSTER-IP     PORT(S)
+m0-standalone-svc            ClusterIP   None           27017/TCP
+m0-standalone-svc-external   NodePort    10.96.67.235   27017:31793/TCP
+ops-manager-db-svc           ClusterIP   None           27017/TCP
+ops-manager-svc              ClusterIP   None           8080/TCP
+ops-manager-svc-ext          NodePort    10.96.144.186  8080:31360/TCP
+```
+
+__step-12__
+
+```bash
+# connect from local machine
+mongo 172.16.182.132:31793
+MongoDB shell version v4.2.2
+connecting to: mongodb://172.16.182.132:31793/test
+MongoDB server version: 4.2.3
+MongoDB Enterprise > use todosdb
+MongoDB Enterprise > db.todos.insertOne({title: "deploy standalone MongoDB on K8s", complete: true})
+MongoDB Enterprise > db.todos.insertOne({title: "deploy MongoDB replicaset on K8s", complete: false})
+MongoDB Enterprise > db.todos.insertOne({title: "deploy MongoDB sharded cluster on K8s", complete: false})
+MongoDB Enterprise > db.todos.find({complete: false})
+MongoDB Enterprise > exit
+```
+
+__step-13__
+
+Dump and then remove the standalone instance.
+
+```bash
+# dump the todosdb database to your local machine
+mongodump --uri "mongodb://172.16.182.132:31793/todosdb" -c todos
+kubectl -n mongodb delete mdb/m0-standalone
+```
+
+### Deploy and Use MongoDB ReplicaSet on Kubernetes
+
+__step-14__
+
+```bash
+kubectl apply -f mongodb-m1-replicaset.yml
+kubectl -n mongodb get mdb/m1-replica-set -w
+# wait until the ReplicaSet is Running
+NAME             TYPE         STATE         VERSION     AGE
+m1-replica-set   ReplicaSet   Reconciling   4.2.3-ent   58s
+m1-replica-set   ReplicaSet   Running       4.2.3-ent   66s
+# verify 3 pods are running for the ReplicaSet
+NAME                                           READY   STATUS    
+m1-replica-set-0                               1/1     Running
+m1-replica-set-1                               1/1     Running
+m1-replica-set-2                               1/1     Running
+```
+
+__step-15__
+
+This time we're going to issue mongo client commands from within the Pod network.  You can grab the connection string from Ops Manager by clicking the "..." button on the ReplicaSet and then select "Connect to this Instance"...copy the connection string (see screenshot).
+
+![ReplicaSet Connection String](/assets/ReplicaSetConnectionString.png)
+
+Now exec into a shell on the Primary Pod and add some data.
+
+```bash
+# You can find the primary from Ops Manager UI, in most cases it will be -0
+kubectl -n mongodb exec -it m1-replica-set-0 sh
+# Now in the Pod shell...copy the connection string to connect
+$ /var/lib/mongodb-mms-automation/mongodb-linux-x86_64-4.2.3-ent/bin/mongo \
+  --host m1-replica-set-0.m1-replica-set-svc.mongodb.svc.cluster.local \
+  --port 27017
+MongoDB shell version v4.2.3
+connecting to: mongodb://m1-replica-set-0...blah blah blah
+MongoDB Enterprise m1-replica-set:PRIMARY> use todosdb
+MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.insertOne({title: "deploy standalone MongoDB on K8s", complete: true})
+MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.insertOne({title: "deploy MongoDB replicaset on K8s", complete: true})
+MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.insertOne({title: "deploy MongoDB sharded cluster on K8s", complete: false})
+MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.find({complete: false}).pretty()
+{
+	"_id" : ObjectId("5e38ebcf1ac70e1e4ff81efe"),
+	"title" : "deploy MongoDB sharded cluster on K8s",
+	"complete" : false
+}
+```
+
+__step-16__  
+
+Now remove the ReplicaSet.
+
+```bash
+kubectl -n mongodb delete mdb/m1-replica-set
 ```
 
 ### Teardown
@@ -221,9 +274,26 @@ kube delete secret ops-manager-admin-secret
 
 ### Nice commands to know
 
+Set context to mongodb namespace
+
 ```bash
 kube config set-context --current --namespace=mongodb
 ```
+
+Install kubectl
+
+```bash
+curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl"
+```
+
+Install Minikube direct
+
+```bash
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64 \
+  && sudo install minikube-darwin-amd64 /usr/local/bin/minikube
+```
+
+[VMware Driver](https://minikube.sigs.k8s.io/docs/reference/drivers/vmware/) for Minikube
 
 ```bash
 r=https://api.github.com/repos/machine-drivers/docker-machine-driver-vmware

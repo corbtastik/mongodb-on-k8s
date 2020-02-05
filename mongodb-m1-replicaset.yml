@@ -1,11 +1,11 @@
 apiVersion: mongodb.com/v1
 kind: MongoDB
 metadata:
-  name: m0-replica-set
+  name: m1-replica-set
   namespace: mongodb
 spec:
   members: 3
-  version: 4.2.2-ent
+  version: 4.2.3-ent
   type: ReplicaSet
   opsManager:
     configMapRef:
