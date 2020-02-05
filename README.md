@@ -114,13 +114,13 @@ __step-8__
 # User > Account > Public API Access > Generate
 -------------------------------------------------
 Description: om-main-user-credentials
-API Key:     0bbb4b24-bf9e-4685-bd41-f41f59685165
+API Key:     687242dd-d524-41b7-97db-e16987e6888d
 ```
 
 ```bash
 kubectl create secret generic om-main-user-credentials \
   --from-literal="user=admin@opsmanager.com" \
-  --from-literal="publicApiKey=0bbb4b24-bf9e-4685-bd41-f41f59685165" \
+  --from-literal="publicApiKey=687242dd-d524-41b7-97db-e16987e6888d" \
   -n mongodb
 ```
 
@@ -138,7 +138,7 @@ kubectl create configmap ops-manager-connection \
 __step-10__
 
 ```bash
-kubectl apply -f mongodb-m0-standalone.yaml
+kubectl apply -f mongodb-m0-standalone.yml
 # or kube apply -f mongodb-replicaset.yml
 # or kube apply -f mongodb-shared.yml
 # wait for the 3 node replicaset to come up...
@@ -227,7 +227,6 @@ MongoDB Enterprise m1-replica-set:PRIMARY> use todosdb
 MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.insertOne({title: "deploy standalone MongoDB on K8s", complete: true})
 MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.insertOne({title: "deploy MongoDB replicaset on K8s", complete: true})
 MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.insertOne({title: "deploy MongoDB sharded cluster on K8s", complete: false})
-MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.find({complete: false})
 MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.find({complete: false}).pretty()
 {
 	"_id" : ObjectId("5e38ebcf1ac70e1e4ff81efe"),
@@ -275,9 +274,26 @@ kube delete secret ops-manager-admin-secret
 
 ### Nice commands to know
 
+Set context to mongodb namespace
+
 ```bash
 kube config set-context --current --namespace=mongodb
 ```
+
+Install kubectl
+
+```bash
+curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl"
+```
+
+Install Minikube direct
+
+```bash
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64 \
+  && sudo install minikube-darwin-amd64 /usr/local/bin/minikube
+```
+
+[VMware Driver](https://minikube.sigs.k8s.io/docs/reference/drivers/vmware/) for Minikube
 
 ```bash
 r=https://api.github.com/repos/machine-drivers/docker-machine-driver-vmware

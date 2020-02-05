@@ -6,12 +6,13 @@ metadata:
 spec:
   shardCount: 2
   mongodsPerShardCount: 3
-  mongosCount: 2
-  configServerCount: 3
+  mongosCount: 1
+  configServerCount: 1
   version: 4.2.3-ent
   opsManager:
     configMapRef:
       name: ops-manager-connection
   credentials: om-main-user-credentials
   type: ShardedCluster
+  exposedExternally: true
   persistent: true
