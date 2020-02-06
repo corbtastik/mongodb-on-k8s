@@ -8,10 +8,15 @@ spec:
   version: 4.2.4
   # the name of the secret containing admin user credentials.
   adminCredentials: ops-manager-admin-secret
+  # use LoadBalancer is your K8s infrastructure supports it
+  # otherwise use NodePort
   externalConnectivity:
-    type: NodePort
+    type: LoadBalancer
+  # disable backups since this is a dev deploy
+  backup:
+    enabled: false
   # the Replica Set backing Ops Manager.
   # appDB has the SCRAM-SHA authentication mode always enabled
   applicationDatabase:
     members: 3
-    version: 4.2.2
+    version: 4.2.3

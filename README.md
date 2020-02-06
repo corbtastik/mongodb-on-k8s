@@ -1,4 +1,27 @@
-## Minikube
+**Work in Progress**
+
+## MongoDB on K8s
+
+This document describes how to demo the [MongoDB Enterprise Kubernetes Operator](https://docs.mongodb.com/kubernetes-operator/master/) on your MacBook using [Minikube](https://minikube.sigs.k8s.io/), GKE and EKS.  The goal of this demo is to reinforce the Freedom to Run Anywhere by showing how easy it is to deploy, run and consume MongoDB on Kubernetes.
+
+### High-level Outline
+
+* Install Required Infrastructure
+* Install MongoDB Enterprise Kubernetes Operator
+* Deploy MongoDB Ops Manager on Kubernetes
+* Configure MongoDB Operator with Ops Manager API Key
+* Deploy and Use MongoDB Standalone on Kubernetes
+* Deploy and Use MongoDB ReplicaSet on Kubernetes
+* (Optional) Deploy and Use MongoDB Shared Cluster on Kubernetes
+
+_The demo environment runs on Minikube and can be taxing to a MacBook, as such it's recommended to shutdown non-essentials for the best experience (close those Chrome tabs? 🤔)_
+
+### Install Required Infrastructure
+
+* VirtualBox 5.x - Required for virtualization substrate (v5.2.36)
+* Minikube - VM running Kubernetes (v1.6.2)
+* Kubectl for interacting with Kubernetes (v1.17.2)
+* MongoDB Enterprise - Installed locally for mongo client (GA version 4.2.3)
 
 __step-0__
 
@@ -114,13 +137,13 @@ __step-8__
 # User > Account > Public API Access > Generate
 -------------------------------------------------
 Description: om-main-user-credentials
-API Key:     687242dd-d524-41b7-97db-e16987e6888d
+API Key:     ec19ba1c-b63f-4ac4-a55a-d09cca21067d
 ```
 
 ```bash
 kubectl create secret generic om-main-user-credentials \
   --from-literal="user=admin@opsmanager.com" \
-  --from-literal="publicApiKey=687242dd-d524-41b7-97db-e16987e6888d" \
+  --from-literal="publicApiKey=ec19ba1c-b63f-4ac4-a55a-d09cca21067d" \
   -n mongodb
 ```
 
