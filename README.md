@@ -95,9 +95,6 @@ ops-manager-db-1            1/1    Running            0         8m24s
 ops-manager-db-2            1/1    Running            0         7m48s
 ```
 
-[Ops Manager Resource Docs](https://docs.mongodb.com/kubernetes-operator/v1.4/reference/k8s-operator-om-specification/)
-[MongoDB Enterprise Kubernetes Operator](https://github.com/mongodb/mongodb-enterprise-kubernetes)
-
 __step-5__
 
 Open MongoDB Ops Manager and login with the `ops-manager-admin-secret` creds above.  To get the right endpoint for Ops Manager retrieve the node's INTERNAL-IP and NodePort.
@@ -317,3 +314,5 @@ curl -LO $(curl -s $r/releases/latest | grep -o 'http.*darwin_amd64' | head -n1)
 ### References
 
 1. [Ops Manager in K8s](https://www.mongodb.com/blog/post/running-mongodb-ops-manager-in-kubernetes)
+1. [Ops Manager Resource Docs](https://docs.mongodb.com/kubernetes-operator/v1.4/reference/k8s-operator-om-specification/)
+1. [MongoDB Enterprise Kubernetes Operator](https://github.com/mongodb/mongodb-enterprise-kubernetes)
