@@ -42,7 +42,7 @@ __step-1__
 * Create a namespace for all MongoDB assets.
 
 ```bash
-kube create namespace mongodb
+kubectl create namespace mongodb
 ```
 
 __step-2__
@@ -56,10 +56,10 @@ Create Custom Resource Definitions
 ```bash
 # Download Custom Resource Definitions
 curl -O https://raw.githubusercontent.com/mongodb/mongodb-enterprise-kubernetes/master/crds.yaml
-kube apply -f crds.yaml
+kubectl apply -f crds.yaml
 # Download MongoDB Enterprise Operator
 curl -O https://raw.githubusercontent.com/mongodb/mongodb-enterprise-kubernetes/master/mongodb-enterprise.yaml
-kube apply -f mongodb-enterprise.yaml
+kubectl apply -f mongodb-enterprise.yaml
 ```
 
 ### Deploy MongoDB Kubernetes Operator
@@ -67,7 +67,7 @@ kube apply -f mongodb-enterprise.yaml
 __step-3__
 
 ```bash
-kube create secret generic ops-manager-admin-secret \
+kubectl create secret generic ops-manager-admin-secret \
 --from-literal=Username="admin@opsmanager.com" \
 --from-literal=Password="Passw0rd." \
 --from-literal=FirstName="Ops" \
@@ -82,11 +82,11 @@ Deploy MongoDB Ops Manager in a Pod as well as a 3 member MongoDB ReplicaSet for
 If you're on a macbook you'll know its working because the fans should be spinning.
 
 ```bash
-kube apply -f mongodb-ops-manager-1.yml
+kubectl apply -f mongodb-ops-manager.yml
 # wait a few mins for the objects to create
-kube -n mongodb get om -w
+kubectl -n mongodb get om -w
 # should have these objects
-kube -n mongodb get pods -o wide  
+kubectl -n mongodb get pods -o wide  
 NAME                        READY  STATUS             RESTARTS  AGE
 mongodb-enterprise-operator 1/1    Running            0         62m
 ops-manager-0               1/1    Running            0         7m3s
@@ -104,9 +104,9 @@ Open MongoDB Ops Manager and login with the `ops-manager-admin-secret` creds abo
 
 ```bash
 # remember INTERNAL-IP
-kube -n mongodb get node -o wide
+kubectl -n mongodb get node -o wide
 # remember high-side NODE-PORT, should be something like 3xxxx
-kube -n mongodb get service ops-manager-svc-ext
+kubectl -n mongodb get service ops-manager-svc-ext
 ```
 
 Open a Browser to http://INTERNAL-IP:NODE-PORT
@@ -118,7 +118,7 @@ __step-6__
 Remove the `ops-manager-admin-secret` secret from Kubernetes because you remember it right?
 
 ```bash
-kube delete secret ops-manager-admin-secret -n mongodb
+kubectl delete secret ops-manager-admin-secret -n mongodb
 ```
 
 __step-7__
@@ -127,11 +127,11 @@ Walk through the Ops Manager setup, accepting the defaults.  Once complete you'l
 
 ![Ops Manager Login](/assets/OpsManagerOverview.png)
 
-### Create
-
-### Ops Manager User
+### Configure MongoDB Operator with Ops Manager API Key
 
 __step-8__
+
+From Ops Manager (__TODO__ add screenshot)
 
 ```txt
 # User > Account > Public API Access > Generate
@@ -162,9 +162,7 @@ __step-10__
 
 ```bash
 kubectl apply -f mongodb-m0-standalone.yml
-# or kube apply -f mongodb-replicaset.yml
-# or kube apply -f mongodb-shared.yml
-# wait for the 3 node replicaset to come up...
+# wait for database to come up
 kubectl -n mongodb get mdb  -w
 ```
 
@@ -268,34 +266,25 @@ kubectl -n mongodb delete mdb/m1-replica-set
 
 ### Teardown
 
+__TODO__ clean this up
+
 ```bash
-kube delete pvc mongodb-standalone
-kube delete pv mongodb-standalone
-kube delete namespace mongodb
-kube delete storageclass mongodb-standalone
-kube delete crd mongodb.mongodb.com
-kube delete crd mongodbusers.mongodb.com
-kube delete crd opsmanagers.mongodb.com
+kubectl delete pvc mongodb-standalone
+kubectl delete pv mongodb-standalone
+kubectl delete namespace mongodb
+kubectl delete storageclass mongodb-standalone
+kubectl delete crd mongodb.mongodb.com
+kubectl delete crd mongodbusers.mongodb.com
+kubectl delete crd opsmanagers.mongodb.com
 
-kube delete secret mongodb-admin-creds
-kube delete secret ops-manager-admin-secret
-kube delete secret ops-manager-admin-secret
-
+kubectl delete secret mongodb-admin-creds
+kubectl delete secret ops-manager-admin-secret
+kubectl delete secret ops-manager-admin-secret
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
 ### Nice commands to know
+
+__TODO__ clean this up
 
 Set context to mongodb namespace
 
@@ -324,20 +313,6 @@ curl -LO $(curl -s $r/releases/latest | grep -o 'http.*darwin_amd64' | head -n1)
  && install docker-machine-driver-vmware_darwin_amd64 \
   /usr/local/bin/docker-machine-driver-vmware
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ### References
 
