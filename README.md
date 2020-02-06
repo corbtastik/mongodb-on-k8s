@@ -33,7 +33,7 @@ __step-0__
 The MongoDB Enterprise Operator for Kubernetes allows devOps teams to:
 
 * Deploy and run MongoDB Ops Manager on K8s  
-* Deploy MongoDB clusters on K8s  
+* Deploy and manage MongoDB clusters on K8s  
 
 ### Initial setup
 
