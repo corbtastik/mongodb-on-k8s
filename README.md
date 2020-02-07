@@ -57,7 +57,7 @@ MongoDB shell version v4.2.3
 __step-0__
 
 ```bash
-# modify start.sh to your taste
+# modify to your taste then start minikube
 ./start.sh
 ```
 
