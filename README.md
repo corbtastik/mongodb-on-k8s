@@ -110,9 +110,7 @@ kubectl create secret generic ops-manager-admin-secret \
 
 __step-4__
 
-Deploy MongoDB Ops Manager in a Pod as well as a 3 member MongoDB ReplicaSet for the Ops Manager application database.  Each startup time we vary based on Hardware and quota given to Minikube, however expect to wait 5-10 mins for everything to reach Running status.
-
-If you're on a macbook you'll know its working because the fans should be spinning.
+Deploy MongoDB Ops Manager in a Pod as well as a 3 member MongoDB ReplicaSet for the Ops Manager application database.  Each startup time will vary based on Hardware and quota given to Minikube, however expect to wait 5-10 mins for everything to reach Running status.
 
 ```bash
 kubectl apply -f mongodb-ops-manager.yml
@@ -139,7 +137,7 @@ kubectl -n mongodb get node -o wide
 kubectl -n mongodb get service ops-manager-svc-ext
 ```
 
-Open a Browser to http://INTERNAL-IP:NODE-PORT
+Open a Browser to ``http://INTERNAL-IP:NODE-PORT``
 
 ![Ops Manager Login](/assets/OpsManagerLogin.png)
 
@@ -161,10 +159,12 @@ Walk through the Ops Manager setup, accepting the defaults.  Once complete you'l
 
 __step-8__
 
-From Ops Manager (__TODO__ add screenshot)
+We need to create an API Key for Ops Manager API before the MongoDB Operator can deploy MongoDB on Kubernetes.  You can do this through the Ops Manager UI.  Once the API Key is created we need to create a Kubernetes Secret containing the User and API Key.
+
+(__TODO__ add screenshot)
 
 ```txt
-# User > Account > Public API Access > Generate
+# User (Ops Manager upper right corner) > Account > Public API Access > Generate
 -------------------------------------------------
 Description: om-main-user-credentials
 API Key:     ec19ba1c-b63f-4ac4-a55a-d09cca21067d
@@ -178,6 +178,8 @@ kubectl create secret generic om-main-user-credentials \
 ```
 
 __step-9__
+
+Next we need to add a Kubernetes ConfigMap to configure the connection to the Ops Manager endpoint and Project.  The Project will be created if it doesn't exist and this is where MongoDB objects managed by Kubernetes will show up.
 
 ```bash
 kubectl create configmap ops-manager-connection \
@@ -229,19 +231,9 @@ MongoDB Enterprise > db.todos.find({complete: false})
 MongoDB Enterprise > exit
 ```
 
-__step-13__
-
-Dump and then remove the standalone instance.
-
-```bash
-# dump the todosdb database to your local machine
-mongodump --uri "mongodb://172.16.182.132:31793/todosdb" -c todos
-kubectl -n mongodb delete mdb/m0-standalone
-```
-
 ### Deploy and Use MongoDB ReplicaSet on Kubernetes
 
-__step-14__
+__step-13__
 
 ```bash
 kubectl apply -f mongodb-m1-replicaset.yml
@@ -257,7 +249,7 @@ m1-replica-set-1                               1/1     Running
 m1-replica-set-2                               1/1     Running
 ```
 
-__step-15__
+__step-14__
 
 This time we're going to issue mongo client commands from within the Pod network.  You can grab the connection string from Ops Manager by clicking the "..." button on the ReplicaSet and then select "Connect to this Instance"...copy the connection string (see screenshot).
 
@@ -286,7 +278,7 @@ MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.find({complete: false}).pret
 }
 ```
 
-__step-16__  
+__step-15__  
 
 Now remove the ReplicaSet.
 
@@ -333,15 +325,6 @@ Install Minikube direct
 ```bash
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64 \
   && sudo install minikube-darwin-amd64 /usr/local/bin/minikube
-```
-
-[VMware Driver](https://minikube.sigs.k8s.io/docs/reference/drivers/vmware/) for Minikube
-
-```bash
-r=https://api.github.com/repos/machine-drivers/docker-machine-driver-vmware
-curl -LO $(curl -s $r/releases/latest | grep -o 'http.*darwin_amd64' | head -n1) \
- && install docker-machine-driver-vmware_darwin_amd64 \
-  /usr/local/bin/docker-machine-driver-vmware
 ```
 
 ### References
