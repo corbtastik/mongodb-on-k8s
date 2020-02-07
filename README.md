@@ -9,6 +9,8 @@ The MongoDB Enterprise Operator for Kubernetes allows devOps teams to:
 * Deploy and run MongoDB Ops Manager on K8s  
 * Deploy and manage MongoDB clusters on K8s
 
+_The demo environment runs on Minikube and can be taxing to a MacBook, as such it's recommended to shutdown non-essentials for the best experience (close those Chrome tabs? 🤔)_
+
 ### Minikube High-level Outline
 
 * Install Required Infrastructure
@@ -18,8 +20,6 @@ The MongoDB Enterprise Operator for Kubernetes allows devOps teams to:
 * Deploy and Use MongoDB Standalone on Kubernetes
 * Deploy and Use MongoDB ReplicaSet on Kubernetes
 * (Optional) Deploy and Use MongoDB Shared Cluster on Kubernetes
-
-_The demo environment runs on Minikube and can be taxing to a MacBook, as such it's recommended to shutdown non-essentials for the best experience (close those Chrome tabs? 🤔)_
 
 ### Install Required Infrastructure
 
