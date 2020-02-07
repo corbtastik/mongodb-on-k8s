@@ -18,10 +18,41 @@ _The demo environment runs on Minikube and can be taxing to a MacBook, as such i
 
 ### Install Required Infrastructure
 
-* VirtualBox 5.x - Required for virtualization substrate (v5.2.36)
-* Minikube - VM running Kubernetes (v1.6.2)
-* Kubectl for interacting with Kubernetes (v1.17.2)
-* MongoDB Enterprise - Installed locally for mongo client (GA version 4.2.3)
+Install the following tools on your MacBook.  There's several ways to install and setup each of these so pick a method that works for you.  Install options are documented in the links below.
+
+* [VirtualBox (v6.0)](https://www.virtualbox.org/wiki/Download_Old_Builds_6_0) - Required for virtualization substrate
+* [Minikube (v1.6.x)](https://minikube.sigs.k8s.io/docs/start/) - VM running Kubernetes
+* [Kubectl (v1.17.x)](https://kubernetes.io/docs/tasks/tools/install-kubectl/) for interacting with Kubernetes
+* [MongoDB Enterprise (v4.2.x)](https://www.mongodb.com/download-center/enterprise) - Installed locally for mongo client
+
+You should be able to resolve each from the command line.
+
+```bash
+# virtualbox version
+$ vboxmanage --version
+6.0.16r135674
+
+$ minikube version
+minikube version: v1.6.2
+
+$ kubectl version -o json
+{
+  "clientVersion": {
+    "major": "1",
+    "minor": "17",
+    "gitVersion": "v1.17.2",
+    "gitCommit": "59603c6e503c87169aea6106f57b9f242f64df89",
+    "gitTreeState": "clean",
+    "buildDate": "2020-01-18T23:30:10Z",
+    "goVersion": "go1.13.5",
+    "compiler": "gc",
+    "platform": "darwin/amd64"
+  }
+}
+
+$ mongo --version
+MongoDB shell version v4.2.3
+```
 
 __step-0__
 
