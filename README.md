@@ -4,7 +4,7 @@
 
 This document describes how to demo the [MongoDB Enterprise Kubernetes Operator](https://docs.mongodb.com/kubernetes-operator/master/) on your MacBook using [Minikube](https://minikube.sigs.k8s.io/), GKE and EKS.  The goal of this demo is to reinforce the Freedom to Run Anywhere by showing how easy it is to deploy, run and consume MongoDB on Kubernetes.
 
-### High-level Outline
+### Minikube High-level Outline
 
 * Install Required Infrastructure
 * Install MongoDB Enterprise Kubernetes Operator
