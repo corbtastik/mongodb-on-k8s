@@ -54,13 +54,6 @@ $ mongo --version
 MongoDB shell version v4.2.3
 ```
 
-__step-0__
-
-```bash
-# modify to your taste then start minikube
-./start.sh
-```
-
 The MongoDB Enterprise Operator for Kubernetes allows devOps teams to:
 
 * Deploy and run MongoDB Ops Manager on K8s  
@@ -68,9 +61,18 @@ The MongoDB Enterprise Operator for Kubernetes allows devOps teams to:
 
 ### Initial setup
 
+__step-0__
+
+Config and start Minikube.
+
+```bash
+# modify to your taste then start minikube
+./start.sh
+```
+
 __step-1__
 
-* Create a namespace for all MongoDB assets.
+Create a namespace for all MongoDB assets.
 
 ```bash
 kubectl create namespace mongodb
