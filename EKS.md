@@ -415,7 +415,7 @@ m2-sharded-cluster-mongos   1/1     3m56s
 ops-manager                 1/1     3h22m
 ops-manager-db              3/3     3h25m
 
-# verify pods are running for the Cluster (mongos, config, shard1, shard2)
+# verify pods are running for the Cluster (mongos, config, shard00/01/02, shard10/11/12)
 $ kubectl -n mongodb get pods
 NAME                                           READY   STATUS    RESTARTS   AGE
 m2-sharded-cluster-0-0                         1/1     Running   0          7m39s
