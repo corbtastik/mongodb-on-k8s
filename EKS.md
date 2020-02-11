@@ -342,14 +342,9 @@ m1-replica-set-1                               1/1     Running
 m1-replica-set-2                               1/1     Running
 ```
 
-This time we're going to issue mongo client commands from within the Pod network.  You can grab the connection string from Ops Manager by clicking the "..." button on the ReplicaSet and then select "Connect to this Instance"...copy the connection string (see screenshot).
-
-![ReplicaSet Connection String](/assets/EKS-ReplicaSetConnectionString.png)
-
-Now exec into a shell on the Primary Pod and add some data.  The Primary Pod is the `host` argument specified in the connection string above.  Substitute your Primary Pod in the commands below.
+This time we're going to issue mongo client commands from within the Pod network.  Exec into a shell on the Primary Pod and add some data.  Substitute your Primary Pod in the commands below...You can find the primary from Ops Manager UI, it's not always m1-replica-set-0.
 
 ```bash
-# You can find the primary from Ops Manager UI, it's not always m1-replica-set-0
 $ kubectl -n mongodb exec -it m1-replica-set-2 sh
 # set mongo in PATH on Pod
 $ export PATH=/var/lib/mongodb-mms-automation/mongodb-linux-x86_64-4.2.3-ent/bin:$PATH
