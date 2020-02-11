@@ -13,7 +13,7 @@ Demo Guides
 
 * [Local Box using Minikube](./LOCAL.md)
 * [GKE](./GKE.md)
-* EKS - coming soon
+* [EKS](./EKS.md)
 
 ### References
 
