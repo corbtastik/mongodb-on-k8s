@@ -8,20 +8,20 @@ This document describes how to demo the [MongoDB Enterprise Kubernetes Operator]
 
 The [MongoDB Enterprise Operator for Kubernetes](https://docs.mongodb.com/kubernetes-operator) allows devOps teams to:
 
-* Deploy and run MongoDB Ops Manager on K8s infra
-* Deploy and manage MongoDB Standalone, ReplicaSets and Sharded Clusters on K8s infra
-* Benefit from K8s devOps goodness - extensibility, elasticity, resiliency...etc.
+* Deploy and run [MongoDB Ops Manager](https://www.mongodb.com/products/ops-manager) on K8s infra
+* Deploy and manage MongoDB [Standalone](https://docs.mongodb.com/manual/reference/glossary/#term-standalone), [ReplicaSets](https://docs.mongodb.com/manual/reference/glossary/#term-replica-set) and [Sharded Clusters](https://docs.mongodb.com/manual/reference/glossary/#term-sharded-cluster) on K8s infra
+* Benefit from [K8s](https://kubernetes.io/) devOps goodness - extensibility, elasticity, resiliency...etc.
 
 ## TOC
 
-* Install Prerequisites
-* Provision AWS Infrastructure
-* Install MongoDB Enterprise Kubernetes Operator
-* Deploy MongoDB Ops Manager on Kubernetes
-* Configure MongoDB Operator with Ops Manager API Key
-* Deploy and Use MongoDB Standalone on Kubernetes
-* Deploy and Use MongoDB ReplicaSet on Kubernetes
-* Deploy and Use MongoDB Sharded Cluster on Kubernetes
+* [Install Prerequisites](#install-prerequisites)
+* [Provision AWS Infrastructure](#provision-aws-infrastructure)
+* [Install MongoDB Enterprise Kubernetes Operator](#install-mongodb-enterprise-kubernetes-operator)
+* [Deploy MongoDB Ops Manager on Kubernetes](#deploy-mongodb-ops-manager-on-kubernetes)
+* [Configure MongoDB Operator with Ops Manager API Key](#configure-mongodb-operator-with-ops-manager-api-key)
+* [Deploy and Use MongoDB Standalone on Kubernetes](#deploy-and-use-mongodb-standalone-on-kubernetes)
+* [Deploy and Use MongoDB ReplicaSet on Kubernetes](#deploy-and-use-mongodb-replicaset-on-kubernetes)
+* [Deploy and Use MongoDB Sharded Cluster on Kubernetes](#deploy-and-use-mongodb-sharded-cluster-on-kubernetes)
 
 ## Install Prerequisites
 
