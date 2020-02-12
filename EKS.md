@@ -299,9 +299,9 @@ MongoDB shell version v4.2.3
 connecting to: mongodb://ac5c5f8b64cf611ea8398027a0aa1064-1351410667.us-west-2.elb.amazonaws.com:27017/test?compressors=disabled&gssapiServiceName=mongodb
 MongoDB server version: 4.2.3
 MongoDB Enterprise > use todosdb
-MongoDB Enterprise > db.todos.insertOne({title: "deploy standalone MongoDB on K8s", complete: true})
-MongoDB Enterprise > db.todos.insertOne({title: "deploy MongoDB replicaset on K8s", complete: false})
-MongoDB Enterprise > db.todos.insertOne({title: "deploy MongoDB sharded cluster on K8s", complete: false})
+MongoDB Enterprise > db.todos.insertOne({title: "Deploy standalone on K8s", complete: true})
+MongoDB Enterprise > db.todos.insertOne({title: "Deploy replicaset on K8s", complete: false})
+MongoDB Enterprise > db.todos.insertOne({title: "Deploy sharded cluster on K8s", complete: false})
 MongoDB Enterprise > db.todos.find({complete: false})
 MongoDB Enterprise > exit
 ```
@@ -352,9 +352,9 @@ $ mongo
 MongoDB shell version v4.2.3
 connecting to: mongodb://m1-replica-set-2...blah blah blah
 MongoDB Enterprise m1-replica-set:PRIMARY> use todosdb
-MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.insertOne({title: "deploy standalone MongoDB on K8s", complete: true})
-MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.insertOne({title: "deploy MongoDB replicaset on K8s", complete: true})
-MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.insertOne({title: "deploy MongoDB sharded cluster on K8s", complete: false})
+MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.insertOne({title: "Deploy standalone on K8s", complete: true})
+MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.insertOne({title: "Deploy replicaset on K8s", complete: true})
+MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.insertOne({title: "Deploy sharded cluster on K8s", complete: false})
 MongoDB Enterprise m1-replica-set:PRIMARY> db.todos.find({complete: false}).pretty()
 {
 	"_id" : ObjectId("5e38ebcf1ac70e1e4ff81efe"),
@@ -433,20 +433,56 @@ ops-manager-db-1                               1/1     Running   0          3h25
 ops-manager-db-2                               1/1     Running   0          3h24m
 ```
 
-Since we enabled `spec.exposedExternally` we get a NodePort service for Mongos which we'll use to connect to the Sharded Cluster.
+Since we enabled `spec.exposedExternally` we get a NodePort service for Mongos which we can use to connect to our Sharded Cluster.  The instructions for connecting using the NodePort are in the MongoDB docs [here](https://docs.mongodb.com/kubernetes-operator/master/tutorial/connect-from-outside-k8s/).
+
+In this demo kit we're gonna provision a LoadBalancer since AWS infra supports that out of the box.  The LoadBalancer will simply front requests to our Mongos Pod and this will be out client connection endpoint.
 
 ```bash
-$ kubectl -n mongodb get service m2-sharded-cluster-svc-external
-NAME                              TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)           AGE
-m2-sharded-cluster-svc-external   NodePort   10.100.153.242   <none>        27017:32607/TCP   8m27s
+# provision a LoadBalancer for Mongos
+$ kubectl -n mongodb apply -f mongodb-m2-loadbalancer.yml
+# copy the EXTERNAL-IP, this is the Mongos endpoint
+$ kubectl -n mongodb get service m2-sharded-cluster-svc-ext
+NAME                         TYPE           CLUSTER-IP      EXTERNAL-IP                                                              PORT(S)           AGE
+m2-sharded-cluster-svc-ext   LoadBalancer   10.100.72.121   ab5ae6f1f4d2311eabea00a98cbc68bd-746866264.us-west-2.elb.amazonaws.com   27017:31119/TCP   35m
+```
+
+Now we can connect with the mongo shell using the EXTERNAL-IP/DNS from above.
+
+```bash
+$ mongo ab5ae6f1f4d2311eabea00a98cbc68bd-746866264.us-west-2.elb.amazonaws.com
+MongoDB shell version v4.2.3
+connecting to: mongodb://ab5ae6f1f4d2311eabea00a98cbc68bd-746866264.us-west-2.elb.amazonaws.com:27017/test?compressors=disabled&gssapiServiceName=mongodb
+MongoDB server version: 4.2.3
+MongoDB Enterprise mongos> use todosdb
+MongoDB Enterprise mongos> db.todos.insertOne({title: "Deploy standalone on K8s", complete: true})
+MongoDB Enterprise mongos> db.todos.insertOne({title: "Deploy replicaset on K8s", complete: true})
+MongoDB Enterprise mongos> db.todos.insertOne({title: "Deploy sharded cluster on K8s", complete: true})
+MongoDB Enterprise mongos> db.todos.find({complete: false})
+```
+
+And verify from Ops Manager UI.
+
+![EKS-m2-shardedcluster](/assets/EKS-m2-shardedcluster.png)
+
+Connect an App if you choose!
+
+* Clone [this app](https://github.com/corbtastik/todos-mongoui)
+* build - maven
+* config - use EXTERNAL-IP/DNS of Mongos LoadBalancer
+* run - java with args
 
 ```
+$ git clone https://github.com/corbtastik/todos-mongoui.git
+$ cd todos-mongoui
+$ ./mvnw clean package
+$ java -jar ./target/todos-mongoui-1.0.0.SNAP.jar --spring.data.mongodb.uri='mongodb://ab5ae6f1f4d2311eabea00a98cbc68bd-746866264.us-west-2.elb.amazonaws.com/todosdb'
+```
+
+![EKS-m2-app](/assets/EKS-m2-app.png)
 
 ### Teardown
 
-```bash
 __TODO__
-```
 
 ### Nice commands to know
 
