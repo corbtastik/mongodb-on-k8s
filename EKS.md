@@ -21,7 +21,7 @@ The [MongoDB Enterprise Operator for Kubernetes](https://docs.mongodb.com/kubern
 * Configure MongoDB Operator with Ops Manager API Key
 * Deploy and Use MongoDB Standalone on Kubernetes
 * Deploy and Use MongoDB ReplicaSet on Kubernetes
-* (Optional) Deploy and Use MongoDB Shared Cluster on Kubernetes
+* Deploy and Use MongoDB Shared Cluster on Kubernetes
 
 ## Install Prerequisites
 
