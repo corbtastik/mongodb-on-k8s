@@ -9,7 +9,7 @@ This document describes how to demo the [MongoDB Enterprise Kubernetes Operator]
 The [MongoDB Enterprise Operator for Kubernetes](https://docs.mongodb.com/kubernetes-operator) allows devOps teams to:
 
 * Deploy and run MongoDB Ops Manager on K8s infra
-* Deploy and manage MongoDB Standalone, ReplicaSets and Shared Clusters on K8s infra
+* Deploy and manage MongoDB Standalone, ReplicaSets and Sharded Clusters on K8s infra
 * Benefit from K8s devOps goodness - extensibility, elasticity, resiliency...etc.
 
 ## TOC
@@ -21,7 +21,7 @@ The [MongoDB Enterprise Operator for Kubernetes](https://docs.mongodb.com/kubern
 * Configure MongoDB Operator with Ops Manager API Key
 * Deploy and Use MongoDB Standalone on Kubernetes
 * Deploy and Use MongoDB ReplicaSet on Kubernetes
-* Deploy and Use MongoDB Shared Cluster on Kubernetes
+* Deploy and Use MongoDB Sharded Cluster on Kubernetes
 
 ## Install Prerequisites
 
@@ -111,7 +111,7 @@ $ kubectl create namespace mongodb
 
 Create Custom Resource Definitions for objects we're going to provision with the Operator.
 
-* MongoDB - K8s resource for MongoDB objects such as Standalone, ReplicaSet and SharedClusters
+* MongoDB - K8s resource for MongoDB objects such as Standalone, ReplicaSet and ShardedClusters
 * MongoDBUser - K8s resource for MongoDB users
 * MongoDBOpsManager - K8s resource for MongoDB Enterprise Ops Manager
 
@@ -371,7 +371,7 @@ View ReplicaSet in Ops Manager
 $ kubectl -n mongodb delete mdb/m1-replica-set
 ```
 
-## Deploy and Use MongoDB Shared Cluster on Kubernetes  
+## Deploy and Use MongoDB Sharded Cluster on Kubernetes  
 
 The last sample is deploying and using a simple [Sharded Cluster on K8s](https://docs.mongodb.com/kubernetes-operator/master/tutorial/deploy-sharded-cluster/).  The Cluster in this demo has 2 Shards, each with a 3 node ReplicaSet, 1 Mongos and 1 Config Server.
 

@@ -7,7 +7,7 @@ This repo shows how to demo the [MongoDB Enterprise Kubernetes Operator](https:/
 The MongoDB Enterprise Operator for Kubernetes allows devOps teams to:
 
 * Deploy and run MongoDB Ops Manager on K8s infra
-* Deploy and manage MongoDB Standalone, ReplicaSets and Shared Clusters on K8s infra
+* Deploy and manage MongoDB Standalone, ReplicaSets and Sharded Clusters on K8s infra
 * Benefit from K8s devOps goodness - extensibility, elasticity, resiliency...etc
 
 Demo Guides
