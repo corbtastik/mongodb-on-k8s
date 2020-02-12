@@ -489,13 +489,20 @@ __TODO__
 Set context to mongodb namespace
 
 ```bash
-kube config set-context --current --namespace=mongodb
+$ kubectl config set-context --current --namespace=mongodb
+```
+
+Scale Worker Nodes to 0.
+
+```bash
+$ eksctl get nodegroup --cluster=mongodb-on-k8s  
+$ eksctl scale nodegroup --cluster=mongodb-on-k8s --name=ng-5bbaf5bd --nodes=0
 ```
 
 Install kubectl
 
 ```bash
-curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl"
+$ curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl"
 ```
 
 ### References
