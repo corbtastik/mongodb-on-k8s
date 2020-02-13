@@ -77,13 +77,14 @@ First we need a Kubernetes Cluster and here's a [handy video](https://eksworksho
 This command will provision everything you need, the K8s control plane as well as 3 worker nodes.  By default it uses [m5.large EC2 instances](https://aws.amazon.com/ec2/instance-types/m5/), official AWS EKS AMI, a dedicated VPC and public access to K8s infra.  Expect to wait around 10-15 minutes for everything to provision.
 
 ```bash
+$ aws configure # enter your AWS ACCESS Key and Secret
 # customize the name and region to your taste
 $ eksctl create cluster --name mongodb-on-k8s --nodes 3 --region us-west-2
 ```
 
 You can view progress from the command line as well as the EKS, Cloud Formation and/or the EC2 AWS Console.
 ![EKS-EC2-console](/assets/EKS-EC2-console.png)
-After 15 minutes or so you should see ready message from the eksctl console.
+After 15 minutes or so you should see a ready message from the eksctl console.
 
 ```bash
 [ℹ]  node "ip-192-168-55-47.us-west-2.compute.internal" is ready
@@ -127,24 +128,26 @@ $ kubectl apply -f mongodb-enterprise.yaml
 Create a K8s [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) to hold the Ops Manager Admin creds. Change the properties to whatever you want...remember this is a demo :smiley:
 
 ```bash
-kubectl create secret generic ops-manager-admin-secret \
---from-literal=Username="admin@opsmanager.com" \
---from-literal=Password="Passw0rd." \
---from-literal=FirstName="Ops" \
---from-literal=LastName="Manager" \
--n mongodb
+$ kubectl create secret generic ops-manager-admin-secret \
+  --from-literal=Username="admin@opsmanager.com" \
+  --from-literal=Password="Passw0rd." \
+  --from-literal=FirstName="Ops" \
+  --from-literal=LastName="Manager" \
+  -n mongodb
 ```
 
 ## Deploy MongoDB Ops Manager on Kubernetes
 
-Deploy MongoDB Ops Manager with a 3 member MongoDB ReplicaSet for the application database.  Startup time will vary based on hardware, however expect to wait 5-10 mins for everything to reach Running status.
+Deploy MongoDB Ops Manager as a Containerized deployment on K8s.
+
+The `mongodb-ops-manager.yml` resource defines a simple Ops Manager deployment with a 3 member MongoDB ReplicaSet for the application database.  Startup time will vary based on hardware, however expect to wait 5-10 mins for everything to reach Running status.
 
 ```bash
-kubectl apply -f mongodb-ops-manager.yml
+$ kubectl apply -f mongodb-ops-manager.yml
 # wait a few mins for the objects to create
-kubectl -n mongodb get om -w
+$ kubectl -n mongodb get om -w
 # should have these objects
-kubectl -n mongodb get pods -o wide  
+$ kubectl -n mongodb get pods -o wide  
 NAME                        READY  STATUS             RESTARTS  AGE
 mongodb-enterprise-operator 1/1    Running            0         176m
 ops-manager-0               1/1    Running            0         172m
@@ -204,7 +207,7 @@ $ kubectl create configmap ops-manager-connection \
   -n mongodb
 ```
 
-Now we're all set to deploy our first MongoDB database on Kubernetes! #mongo-on
+Now we're all set to deploy our first MongoDB database on Kubernetes! `#keep-calm-and-mongo-on`
 
 ## Deploy and Use MongoDB Standalone on Kubernetes
 
@@ -232,7 +235,7 @@ Apply the resource and wait for it to come up.
 
 ```bash
 $ kubectl apply -f mongodb-m0-standalone.yml
-$ kubectl -n mongodb get mdb  -w
+$ kubectl -n mongodb get mdb -w
 ```
 
 Once complete you should be able to see the pods and services running.
@@ -247,7 +250,7 @@ ops-manager-db-0                               1/1     Running   0          42m
 ops-manager-db-1                               1/1     Running   0          41m
 ops-manager-db-2                               1/1     Running   0          40m
 
-$ kubectl -n mongodb get svc
+$ kubectl -n mongodb get services
 NAME                         TYPE           CLUSTER-IP      EXTERNAL-IP                                                              PORT(S)           AGE
 m0-standalone-svc            ClusterIP      None            <none>                                                                   27017/TCP         8m25s
 m0-standalone-svc-external   NodePort       10.100.14.164   <none>                                                                   27017:30713/TCP   8m25s
@@ -291,7 +294,9 @@ ops-manager-svc              ClusterIP      None            <none>              
 ops-manager-svc-ext          LoadBalancer   10.100.36.210   ac792e0f34cef11ea8398027a0aa1064-813290281.us-west-2.elb.amazonaws.com    8080:30979/TCP    50m
 ```
 
-Connect to the standalone instance using the mongo client on your local box.  Use the `EXTERNAL-IP` of the `m0-standalone-svc-ext` LoadBalancer above.
+Connect to the standalone instance using the mongo client on your local box.
+
+You may need to wait a few minutes for the LoadBalancer to deploy.  Use the `EXTERNAL-IP` of the `m0-standalone-svc-ext` LoadBalancer above.
 
 ```bash
 $ mongo ac5c5f8b64cf611ea8398027a0aa1064-1351410667.us-west-2.elb.amazonaws.com
@@ -319,7 +324,7 @@ $ kubectl -n mongodb delete service m0-standalone-svc-ext
 
 ## Deploy and Use MongoDB ReplicaSet on Kubernetes
 
-Now lets deploy a 3 member MongoDB ReplicaSet on K8s and connect with the mongo client.
+Now lets deploy a 3 member [MongoDB ReplicaSet on K8s](https://docs.mongodb.com/kubernetes-operator/master/tutorial/deploy-replica-set/) and connect with the mongo client.
 
 ```bash
 $ kubectl apply -f mongodb-m1-replicaset.yml
@@ -435,7 +440,7 @@ ops-manager-db-2                               1/1     Running   0          3h24
 
 Since we enabled `spec.exposedExternally` we get a NodePort service for Mongos which we can use to connect to our Sharded Cluster.  The instructions for connecting using the NodePort are in the MongoDB docs [here](https://docs.mongodb.com/kubernetes-operator/master/tutorial/connect-from-outside-k8s/).
 
-In this demo kit we're gonna provision a LoadBalancer since AWS infra supports that out of the box.  The LoadBalancer will simply front requests to our Mongos Pod and this will be out client connection endpoint.
+In this demo kit we're gonna provision a LoadBalancer since AWS infra supports that out of the box.  The LoadBalancer will simply front requests to our Mongos Pod and this will be our client connection endpoint.
 
 ```bash
 # provision a LoadBalancer for Mongos
@@ -482,7 +487,10 @@ $ java -jar ./target/todos-mongoui-1.0.0.SNAP.jar --spring.data.mongodb.uri='mon
 
 ### Teardown
 
-__TODO__
+```bash
+$ kubectl delete ns mongodb
+$ eksctl delete cluster --name=mongodb-on-k8s
+```
 
 ### Nice commands to know
 
