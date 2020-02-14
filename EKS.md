@@ -483,7 +483,7 @@ $ ./mvnw clean package
 $ java -jar ./target/todos-mongoui-1.0.0.SNAP.jar --spring.data.mongodb.uri='mongodb://ab5ae6f1f4d2311eabea00a98cbc68bd-746866264.us-west-2.elb.amazonaws.com/todosdb'
 ```
 
-![EKS-m2-app](/assets/EKS-m2-app.png)
+![EKS-app](/assets/EKS-app.png)
 
 ### Teardown
 
