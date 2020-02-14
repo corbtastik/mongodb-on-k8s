@@ -12,7 +12,6 @@ spec:
   # otherwise use NodePort
   externalConnectivity:
     type: LoadBalancer
-  # disable backups since this is a sample deploy
   backup:
     enabled: true
   # the Replica Set backing Ops Manager.
