@@ -77,7 +77,7 @@ First we need a Kubernetes Cluster and here's a [handy video](https://eksworksho
 This command will provision everything you need, the K8s control plane as well as 3 worker nodes.  By default it uses [m5.large EC2 instances](https://aws.amazon.com/ec2/instance-types/m5/), official AWS EKS AMI, a dedicated VPC and public access to K8s infra.  Expect to wait around 10-15 minutes for everything to provision.
 
 ```bash
-$ aws configure # enter your AWS ACCESS Key and Secret
+$ aws configure # enter your AWS Access Key ID and AWS Secret Access Key 
 # customize the name and region to your taste
 $ eksctl create cluster --name mongodb-on-k8s --nodes 3 --region us-west-2
 ```
