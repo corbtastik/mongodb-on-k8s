@@ -1,5 +1,3 @@
-**Work in Progress**
-
 ## MongoDB on K8s
 
 This repo shows how to demo the [MongoDB Enterprise Kubernetes Operator](https://docs.mongodb.com/kubernetes-operator/master/) on your MacBook using [Minikube](https://minikube.sigs.k8s.io/), [GKE](https://cloud.google.com/kubernetes-engine) and [EKS](https://aws.amazon.com/eks/).  The goal of this demo is to reinforce the Freedom to Run Anywhere by showing how easy it is to deploy, run and consume MongoDB on Kubernetes.
