@@ -1,5 +1,3 @@
-**Work in Progress**
-
 # MongoDB on EKS
 
 **Note** - This is a demo kit and not intended for production use in any way, its intended for simple demos and general knowledge...and perhaps for having some cooleo nerd fun :sunglasses:.
