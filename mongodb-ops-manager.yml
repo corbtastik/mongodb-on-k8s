@@ -12,9 +12,9 @@ spec:
   # otherwise use NodePort
   externalConnectivity:
     type: LoadBalancer
-  # disable backups since this is a dev deploy
+  # disable backups since this is a sample deploy
   backup:
-    enabled: false
+    enabled: true
   # the Replica Set backing Ops Manager.
   # appDB has the SCRAM-SHA authentication mode always enabled
   applicationDatabase:

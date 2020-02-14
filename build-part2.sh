@@ -9,6 +9,5 @@ kubectl create configmap ops-manager-connection \
   --from-literal="projectName=Project0" \
   -n mongodb
 
-kubectl apply -f mongodb-m0-standalone.yml
-
-kubectl -n mongodb get mdb  -w
+kubectl -n mongodb apply -f mongodb-m2-shardedcluster.yml
+kubectl -n mongodb apply -f mongodb-m2-loadbalancer.yml
