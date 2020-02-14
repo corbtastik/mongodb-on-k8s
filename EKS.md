@@ -27,7 +27,7 @@ The [MongoDB Enterprise Operator for Kubernetes](https://docs.mongodb.com/kubern
 
 There are several ways to get started with EKS so feel free to choose a method that works for you.  In this demo kit we use [eksctl](https://eksctl.io/) to provision Kubernetes assets on AWS.
 
-**Note** - There are 2 versions of the AWS CLI at this time v1 and v2. **[This guide uses v1](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv1.html)**.
+**Note** - There are 2 versions of the AWS CLI at this time v1 and v2. [This guide uses v1](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv1.html).
 
 * [AWS CLI v1](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv1.html) - for interacting with AWS
 * [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html) - for interacting with EKS (includes docs for installing AWS CLI and aws-iam-authenticator as well).
@@ -77,7 +77,7 @@ First we need a Kubernetes Cluster and here's a [handy video](https://eksworksho
 This command will provision everything you need, the K8s control plane as well as 3 worker nodes.  By default it uses [m5.large EC2 instances](https://aws.amazon.com/ec2/instance-types/m5/), official AWS EKS AMI, a dedicated VPC and public access to K8s infra.  Expect to wait around 10-15 minutes for everything to provision.
 
 ```bash
-$ aws configure # enter your AWS Access Key ID and AWS Secret Access Key 
+$ aws configure # enter your AWS Access Key ID and AWS Secret Access Key
 # customize the name and region to your taste
 $ eksctl create cluster --name mongodb-on-k8s --nodes 3 --region us-west-2
 ```
@@ -519,3 +519,4 @@ $ curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s 
 1. [Ops Manager in K8s](https://www.mongodb.com/blog/post/running-mongodb-ops-manager-in-kubernetes)
 1. [Ops Manager Resource Docs](https://docs.mongodb.com/kubernetes-operator/v1.4/reference/k8s-operator-om-specification/)
 1. [MongoDB Enterprise Kubernetes Operator](https://github.com/mongodb/mongodb-enterprise-kubernetes)
+1. [Identity and Access Management for Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/security-iam.html) - EKS Service IAM Role and EKS Worker Node IAM Role
