@@ -1,7 +1,7 @@
 #!/bin/bash
 kubectl create secret generic om-main-user-credentials \
   --from-literal="user=admin@opsmanager.com" \
-  --from-literal="publicApiKey=687242dd-d524-41b7-97db-e16987e6888d" \
+  --from-literal="publicApiKey=bc05f8e8-3128-4404-b85e-34c87ba74564" \
   -n mongodb
 
 kubectl create configmap ops-manager-connection \
