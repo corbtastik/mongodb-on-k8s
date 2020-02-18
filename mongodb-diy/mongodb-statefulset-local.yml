@@ -14,8 +14,6 @@ spec:
         app: database
         selector: mongodb-standalone
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: minikube
       containers:
       - name: mongodb-standalone
         image: mongo
@@ -30,10 +28,3 @@ spec:
               secretKeyRef:
                 name: mongodb-admin-creds
                 key: password
-        volumeMounts:
-        - name: mongodb-data
-          mountPath: /data/db
-      volumes:
-      - name: mongodb-data
-        persistentVolumeClaim:
-          claimName: mongodb-standalone

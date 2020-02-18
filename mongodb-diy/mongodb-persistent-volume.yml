@@ -1,35 +1,22 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-    name: mongodb-standalone
+    name: mongodb-pv
 spec:
   capacity:
-    storage: 32Gi
+    storage: 16Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: mongodb-standalone
+  persistentVolumeReclaimPolicy: Delete
+  storageClassName: mongodb-default-storageclass
   local:
-    path: /data
+    path: /data/mongodb-standalone # has to exist on worker node
   nodeAffinity:
     required:
-      nodeSelectorTerms:
+      nodeSelectorTerms: # choose a nodeSelector
       - matchExpressions:
         - key: kubernetes.io/hostname
           operator: In
           values:
-            - minikube
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mongodb-standalone
-spec:
-  storageClassName: mongodb-standalone
-  accessModes:
-    - ReadWriteOnce
-  volumeMode: Filesystem
-  resources:
-    requests:
-      storage: 32Gi
+            - kubeone

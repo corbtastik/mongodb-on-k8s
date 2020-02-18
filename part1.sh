@@ -14,7 +14,3 @@ kubectl create secret generic ops-manager-admin-secret \
   --from-literal=FirstName="Ops" \
   --from-literal=LastName="Manager" \
   -n mongodb
-# Deploy Ops Manager on K8s
-kubectl apply -f mongodb-ops-manager.yml
-# wait a few mins for the objects to create (5-10 mins, yeah I know))
-kubectl -n mongodb get om -w
