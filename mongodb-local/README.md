@@ -1,11 +1,6 @@
 # MongoDB on K8s - Minikube
 
-This document describes how to demo the [MongoDB Enterprise Kubernetes Operator](https://docs.mongodb.com/kubernetes-operator/master/) on your MacBook using [Minikube](https://minikube.sigs.k8s.io/).  The goal of this demo is to reinforce the Freedom to Run Anywhere by showing how easy it is to deploy, run and consume MongoDB on Kubernetes.
-
-The MongoDB Enterprise Operator for Kubernetes allows devOps teams to:
-
-* Deploy and run MongoDB Ops Manager on K8s  
-* Deploy and manage MongoDB clusters on K8s
+This document describes how to demo the [MongoDB Enterprise Kubernetes Operator](https://docs.mongodb.com/kubernetes-operator/master/) to stamp out MongoDB instances on your MacBook using [Minikube](https://minikube.sigs.k8s.io/).
 
 _The demo environment runs on Minikube and can be taxing to a MacBook, as such it's recommended to shutdown non-essentials for the best experience (close those Chrome tabs?)._ 🤔
 
@@ -13,15 +8,15 @@ _It also might be good to consider using [VMware Fusion](https://www.vmware.com/
 
 ## TOC
 
-* Install Required Infrastructure
-* Install MongoDB Enterprise Kubernetes Operator
-* Deploy MongoDB Ops Manager on Kubernetes
-* Configure MongoDB Operator with Ops Manager API Key
-* Deploy and Use MongoDB Standalone on Kubernetes
-* Deploy and Use MongoDB ReplicaSet on Kubernetes
-* (Optional) Deploy and Use MongoDB Shared Cluster on Kubernetes
+* [Install Required Infra](./install-required-infra)
+* [Deploy Operator](./deploy-operator)
+* [Deploy MongoDB Ops Manager](./deploy-mongodb-ops-manager)
+* [Connect Operator with Ops Manager](./connect-operator-with-ops-manager)
+* [Deploy MongoDB with the Operator](./deploy-mongodb-with-the-operator)
 
-## Install Required Infrastructure
+---
+
+## Install Required Infra
 
 Install the following tools on your MacBook.  There's several ways to install and setup each of these so pick a method that works for you.  Install options are documented in the links below.
 
@@ -59,28 +54,41 @@ $ mongo --version
 MongoDB shell version v4.2.3
 ```
 
-## Initial setup
+---
 
-Configure cpu, memory and vm-driver for your tastes and start Minikube.
+## Deploy Operator
+
+* [Configure and Start Minikube](./configure-and-start-minikube)
+* [Create mongodb namespace](./create-mongodb-namespace)
+* [Apply MongoDB Custom Resource Definitions](./apply-mongodb-custom-resource-definitions)
+* [Deploy MongoDB Operator](./deploy-mongodb-operator)
+
+### Configure and Start Minikube
+
+Configure cpu, memory and vm-driver for your tastes and run `start.sh` to boot Minikube.
 
 ```bash
 # start.sh
 # use --vm-driver=vmware if you have VMware Fusion installed
 minikube start --vm-driver=virtualbox \
-  --cpus=4 \
-  --memory=10240 \ # as much as you can afford
+  --cpus=4 \       # as much as you can give
+  --memory=10240 \ # ditto
   --disk-size=64g \
   --mount-string="$HOME/data:/data" \
   --kubernetes-version=1.15.10  
 ```
 
-Create a namespace for all MongoDB assets.
+### Create mongodb namespace
+
+All our K8s objects will be deployed into this namespace.
 
 ```bash
 kubectl create namespace mongodb
 ```
 
-Apply [Custom Resource Definitions](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
+### Apply MongoDB Custom Resource Definitions
+
+[Custom Resource Definitions](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) are a way to extend the K8s API and the MongoDB Operator uses these CRDs to define the following MongoDB objects.
 
 * [MongoDB](https://docs.mongodb.com/kubernetes-operator/stable/reference/k8s-operator-specification/) - K8s resource for MongoDB objects such as Standalone, ReplicaSet and ShardedClusters
 * MongoDBUser - K8s resource for MongoDB users
@@ -90,14 +98,37 @@ Apply [Custom Resource Definitions](https://kubernetes.io/docs/concepts/extend-k
 # Download Custom Resource Definitions
 curl -O https://raw.githubusercontent.com/mongodb/mongodb-enterprise-kubernetes/master/crds.yaml
 kubectl apply -f crds.yaml
+```
+
+### Deploy MongoDB Operator
+
+Once CRDs are loaded apply the MongoDB Operator to create service accounts and the actual Operator in our K8s cluster.
+
+```bash
 # Download MongoDB Enterprise Operator
 curl -O https://raw.githubusercontent.com/mongodb/mongodb-enterprise-kubernetes/master/mongodb-enterprise.yaml
 kubectl apply -f mongodb-enterprise.yaml
+# View the Operator deployment
+kubectl -n mongodb describe deployment mongodb-enterprise-operator
+kubectl -n mongodb get deployment mongodb-enterprise-operator
 ```
 
-## Deploy MongoDB Kubernetes Operator
+At this point the Operator deployment is running and we can now use it to deploy MongoDB Ops Manager.
 
-Create Ops Manager credentials as a K8s Secret.
+---
+
+## Deploy MongoDB Ops Manager
+
+**Note:** Deploying Ops Manager with the Operator is currently in beta (03/01/2020) but we're doing so because having everything run in K8s is a bit convenient and cool. :sunglasses:
+
+* [Configure Ops Manager Deployment](./configure-ops-manager-deployment)
+* [Deploy Ops Manager](./deploy-ops-manager)
+* [Setup Ops Manager](./setup-ops-manager)
+* [Cleanup Ops Manager admin Secret](./cleanup-ops-manager-admin-secret)
+
+### Configure Ops Manager Deployment
+
+Create Ops Manager credentials as a K8s Secret so we can login to the Ops Manager UI once its running. :running:
 
 ```bash
 kubectl create secret generic ops-manager-admin-secret \
@@ -108,7 +139,7 @@ kubectl create secret generic ops-manager-admin-secret \
 -n mongodb
 ```
 
-Ensure `mongodb-ops-manager.yml` has `NodePort` configured for external connectivity and you disable backup for Ops Manager. Not a best practice but we're running on Minikube and resources are precious :gem:.
+Ensure `mongodb-ops-manager.yml` has `NodePort` configured for external connectivity and you disable backup for Ops Manager. Not a best practice but we're running on Minikube and resources are precious. :gem:
 
 ```yaml
   externalConnectivity:
@@ -116,6 +147,8 @@ Ensure `mongodb-ops-manager.yml` has `NodePort` configured for external connecti
   backup:
     enabled: false    
 ```
+
+### Deploy Ops Manager
 
 Deploy MongoDB Ops Manager in a Pod as well as a 3 member MongoDB ReplicaSet for the Ops Manager application database.  Startup time will vary based on Hardware and quota given to Minikube, however expect to wait 5-10 mins for everything to reach Running status.
 
@@ -134,20 +167,37 @@ ops-manager-db-1            1/1    Running            0         8m24s
 ops-manager-db-2            1/1    Running            0         7m48s
 ```
 
+### Setup Ops Manager
+
 Open MongoDB Ops Manager at ``http://INTERNAL-IP:NODE-PORT`` and login with the `ops-manager-admin-secret` creds above.  To get the right endpoint for Ops Manager retrieve the node's INTERNAL-IP and NodePort.
 
 ```bash
-# remember INTERNAL-IP
+# get INTERNAL-IP
 kubectl -n mongodb get node -o wide
-# remember high-side NODE-PORT, should be something like 3xxxx
+# get high-side NODE-PORT, should be something like 3xxxx
 kubectl -n mongodb get service ops-manager-svc-ext
 ```
 
 Walk through the Ops Manager setup, accepting defaults.  Once complete you'll have an Ops Manager almost ready to deal :spades:
 
-## Configure MongoDB Operator with Ops Manager API Key
+### Cleanup Ops Manager admin Secret
 
-We need to create an API Key for Ops Manager API before the Operator can deploy MongoDB on Kubernetes.  You can do this through the Ops Manager UI.  Once the API Key is generated we need to create a Kubernetes Secret containing the User and API Key.
+**Note** Its safe to remove the `ops-manager-admin-secret` secret from Kubernetes because Ops Manager is configured.
+
+```bash
+kubectl delete secret ops-manager-admin-secret -n mongodb
+```
+
+---
+
+## Connect Operator with Ops Manager
+
+* [Configure Ops Manager API Key](./configure-ops-manager-api-key)
+* [Configure Ops Manager Connection](./configure-ops-manager-connection)
+
+### Configure Ops Manager API Key
+
+We need to create an API Key for Ops Manager API before the Operator can deploy MongoDB on Kubernetes.  You can do this through the Ops Manager UI.
 
 ```txt
 # User (Ops Manager upper right corner) > Account > Public API Access > Generate
@@ -156,12 +206,16 @@ Description: om-main-user-credentials
 API Key:     ec19ba1c-b63f-4ac4-a55a-d09cca21067d
 ```
 
+Once the API Key is generated we need to create a Kubernetes Secret containing the User and API Key.
+
 ```bash
 kubectl create secret generic om-main-user-credentials \
   --from-literal="user=admin@opsmanager.com" \
   --from-literal="publicApiKey=ec19ba1c-b63f-4ac4-a55a-d09cca21067d" \
   -n mongodb
 ```
+
+### Configure Ops Manager Connection
 
 Next we add a Kubernetes ConfigMap to configure the connection to the Ops Manager endpoint and Project.  The Project will be created if it doesn't exist and this is where MongoDB objects managed by Kubernetes will reside.
 
@@ -172,21 +226,24 @@ kubectl create configmap ops-manager-connection \
   -n mongodb
 ```
 
-At this point Ops Manager is integrated with the Operator and ready to provision MongoDB instances.  Since this demo is on Minikube we'll just deploy a standalone MongoDB instance because you likely don't have enough headroom to deploy anything else.
+---
 
-**Note** Its safe to remove the `ops-manager-admin-secret` secret from Kubernetes because Ops Manager is configured.
+## Deploy MongoDB with the Operator
 
-```bash
-kubectl delete secret ops-manager-admin-secret -n mongodb
-```
+* [Deploy Standalone MongoDB](./deploy-standalone-mongodb)
+* [Connect to database](./connect-to-database)
 
-## Deploy and Use MongoDB Standalone on Kubernetes
+### Deploy Standalone MongoDB
+
+At this point Ops Manager is integrated with the Operator and ready to provision MongoDB instances.  Since this demo is on Minikube we'll just deploy a standalone MongoDB instance because you likely don't have enough headroom to deploy anything else on that little ole MacBook. :computer:
 
 ```bash
 kubectl apply -f mongodb-m0-standalone.yml
 # wait for database to come up
 kubectl -n mongodb get mdb  -w
 ```
+
+### Connect to database
 
 Get the IP of our Master node and the NodePort exposing our Standalone MongoDB instance.
 
