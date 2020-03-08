@@ -134,13 +134,6 @@ ops-manager-db-1            1/1    Running            0         8m24s
 ops-manager-db-2            1/1    Running            0         7m48s
 ```
 
-
-Remove the `ops-manager-admin-secret` secret from Kubernetes because you remember it right?
-
-```bash
-kubectl delete secret ops-manager-admin-secret -n mongodb
-```
-
 Open MongoDB Ops Manager at ``http://INTERNAL-IP:NODE-PORT`` and login with the `ops-manager-admin-secret` creds above.  To get the right endpoint for Ops Manager retrieve the node's INTERNAL-IP and NodePort.
 
 ```bash
@@ -170,13 +163,21 @@ kubectl create secret generic om-main-user-credentials \
   -n mongodb
 ```
 
-Next we need to add a Kubernetes ConfigMap to configure the connection to the Ops Manager endpoint and Project.  The Project will be created if it doesn't exist and this is where MongoDB objects managed by Kubernetes will reside.
+Next we add a Kubernetes ConfigMap to configure the connection to the Ops Manager endpoint and Project.  The Project will be created if it doesn't exist and this is where MongoDB objects managed by Kubernetes will reside.
 
 ```bash
 kubectl create configmap ops-manager-connection \
   --from-literal="baseUrl=http://ops-manager-svc.mongodb.svc.cluster.local:8080" \
   --from-literal="projectName=Project0" \
   -n mongodb
+```
+
+At this point Ops Manager is integrated with the Operator and ready to provision MongoDB instances.  Since this demo is on Minikube we'll just deploy a standalone MongoDB instance because you likely don't have enough headroom to deploy anything else.
+
+**Note** Its safe to remove the `ops-manager-admin-secret` secret from Kubernetes because Ops Manager is configured.
+
+```bash
+kubectl delete secret ops-manager-admin-secret -n mongodb
 ```
 
 ## Deploy and Use MongoDB Standalone on Kubernetes
