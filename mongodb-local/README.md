@@ -14,8 +14,6 @@ _It also might be good to consider using [VMware Fusion](https://www.vmware.com/
 * [Connect Operator with Ops Manager](./connect-operator-with-ops-manager)
 * [Deploy MongoDB with the Operator](./deploy-mongodb-with-the-operator)
 
----
-
 ## Install Required Infra
 
 Install the following tools on your MacBook.  There's several ways to install and setup each of these so pick a method that works for you.  Install options are documented in the links below.
@@ -53,8 +51,6 @@ $ kubectl version -o json
 $ mongo --version
 MongoDB shell version v4.2.3
 ```
-
----
 
 ## Deploy Operator
 
@@ -114,8 +110,6 @@ kubectl -n mongodb get deployment mongodb-enterprise-operator
 ```
 
 At this point the Operator deployment is running and we can now use it to deploy MongoDB Ops Manager.
-
----
 
 ## Deploy MongoDB Ops Manager
 
@@ -188,8 +182,6 @@ Walk through the Ops Manager setup, accepting defaults.  Once complete you'll ha
 kubectl delete secret ops-manager-admin-secret -n mongodb
 ```
 
----
-
 ## Connect Operator with Ops Manager
 
 * [Configure Ops Manager API Key](./configure-ops-manager-api-key)
@@ -225,8 +217,6 @@ kubectl create configmap ops-manager-connection \
   --from-literal="projectName=Project0" \
   -n mongodb
 ```
-
----
 
 ## Deploy MongoDB with the Operator
 
