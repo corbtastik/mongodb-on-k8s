@@ -97,6 +97,8 @@ kubectl apply -f mongodb-enterprise.yaml
 
 ## Deploy MongoDB Kubernetes Operator
 
+Create Ops Manager credentials as a K8s Secret.
+
 ```bash
 kubectl create secret generic ops-manager-admin-secret \
 --from-literal=Username="admin@opsmanager.com" \
@@ -106,8 +108,6 @@ kubectl create secret generic ops-manager-admin-secret \
 -n mongodb
 ```
 
-Deploy MongoDB Ops Manager in a Pod as well as a 3 member MongoDB ReplicaSet for the Ops Manager application database.  Startup time will vary based on Hardware and quota given to Minikube, however expect to wait 5-10 mins for everything to reach Running status.
-
 Ensure `mongodb-ops-manager.yml` has `NodePort` configured for external connectivity and you disable backup for Ops Manager. Not a best practice but we're running on Minikube and resources locally are precious :gem:.
 
 ```yaml
@@ -116,6 +116,9 @@ Ensure `mongodb-ops-manager.yml` has `NodePort` configured for external connecti
   backup:
     enabled: false    
 ```
+
+Deploy MongoDB Ops Manager in a Pod as well as a 3 member MongoDB ReplicaSet for the Ops Manager application database.  Startup time will vary based on Hardware and quota given to Minikube, however expect to wait 5-10 mins for everything to reach Running status.
+
 
 ```bash
 kubectl apply -f mongodb-ops-manager.yml
