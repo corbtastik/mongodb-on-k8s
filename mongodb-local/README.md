@@ -61,16 +61,18 @@ MongoDB shell version v4.2.3
 
 ## Initial setup
 
-__step-0__
-
-Config and start Minikube.
+Configure cpu, memory and vm-driver for your tastes and start Minikube.
 
 ```bash
-# modify to your taste then start minikube
-./start.sh
+# start.sh
+# use --vm-driver=vmware if you have VMware Fusion installed
+minikube start --vm-driver=virtualbox \
+  --cpus=4 \
+  --memory=10240 \ # as much as you can afford
+  --disk-size=64g \
+  --mount-string="$HOME/data:/data" \
+  --kubernetes-version=1.15.10  
 ```
-
-__step-1__
 
 Create a namespace for all MongoDB assets.
 
@@ -78,13 +80,11 @@ Create a namespace for all MongoDB assets.
 kubectl create namespace mongodb
 ```
 
-__step-2__
+Create [Custom Resource Definitions](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
 
-Create Custom Resource Definitions
-
-* MongoDB
-* MongoDBUser
-* MongoDBOpsManager
+* [MongoDB](https://docs.mongodb.com/kubernetes-operator/stable/reference/k8s-operator-specification/) - K8s resource for MongoDB objects such as Standalone, ReplicaSet and ShardedClusters
+* MongoDBUser - K8s resource for MongoDB users
+* [MongoDBOpsManager](https://docs.mongodb.com/kubernetes-operator/stable/reference/k8s-operator-om-specification/) - K8s resource for MongoDB Enterprise Ops Manager
 
 ```bash
 # Download Custom Resource Definitions
@@ -97,8 +97,6 @@ kubectl apply -f mongodb-enterprise.yaml
 
 ## Deploy MongoDB Kubernetes Operator
 
-__step-3__
-
 ```bash
 kubectl create secret generic ops-manager-admin-secret \
 --from-literal=Username="admin@opsmanager.com" \
@@ -108,9 +106,16 @@ kubectl create secret generic ops-manager-admin-secret \
 -n mongodb
 ```
 
-__step-4__
+Deploy MongoDB Ops Manager in a Pod as well as a 3 member MongoDB ReplicaSet for the Ops Manager application database.  Startup time will vary based on Hardware and quota given to Minikube, however expect to wait 5-10 mins for everything to reach Running status.
 
-Deploy MongoDB Ops Manager in a Pod as well as a 3 member MongoDB ReplicaSet for the Ops Manager application database.  Each startup time will vary based on Hardware and quota given to Minikube, however expect to wait 5-10 mins for everything to reach Running status.
+Ensure `mongodb-ops-manager.yml` has `NodePort` configured for external connectivity and you disable backup for Ops Manager. Not a best practice but we're running on Minikube and resources locally are precious :gem:.
+
+```yaml
+  externalConnectivity:
+    type: NodePort
+  backup:
+    enabled: false    
+```
 
 ```bash
 kubectl apply -f mongodb-ops-manager.yml
@@ -126,8 +131,6 @@ ops-manager-db-1            1/1    Running            0         8m24s
 ops-manager-db-2            1/1    Running            0         7m48s
 ```
 
-__step-5__
-
 Open MongoDB Ops Manager and login with the `ops-manager-admin-secret` creds above.  To get the right endpoint for Ops Manager retrieve the node's INTERNAL-IP and NodePort.
 
 ```bash
@@ -141,15 +144,11 @@ Open a Browser to ``http://INTERNAL-IP:NODE-PORT``
 
 ![Ops Manager Login](/assets/OpsManagerLogin.png)
 
-__step-6__
-
 Remove the `ops-manager-admin-secret` secret from Kubernetes because you remember it right?
 
 ```bash
 kubectl delete secret ops-manager-admin-secret -n mongodb
 ```
-
-__step-7__
 
 Walk through the Ops Manager setup, accepting the defaults.  Once complete you'll have an Ops Manager almost ready to deal.
 
@@ -157,11 +156,7 @@ Walk through the Ops Manager setup, accepting the defaults.  Once complete you'l
 
 ## Configure MongoDB Operator with Ops Manager API Key
 
-__step-8__
-
-We need to create an API Key for Ops Manager API before the MongoDB Operator can deploy MongoDB on Kubernetes.  You can do this through the Ops Manager UI.  Once the API Key is created we need to create a Kubernetes Secret containing the User and API Key.
-
-(__TODO__ add screenshot)
+We need to create an API Key for Ops Manager API before the MongoDB Operator can deploy MongoDB on Kubernetes.  You can do this through the Ops Manager UI.  Once the API Key is generated we need to create a Kubernetes Secret containing the User and API Key.
 
 ```txt
 # User (Ops Manager upper right corner) > Account > Public API Access > Generate
@@ -177,9 +172,7 @@ kubectl create secret generic om-main-user-credentials \
   -n mongodb
 ```
 
-__step-9__
-
-Next we need to add a Kubernetes ConfigMap to configure the connection to the Ops Manager endpoint and Project.  The Project will be created if it doesn't exist and this is where MongoDB objects managed by Kubernetes will show up.
+Next we need to add a Kubernetes ConfigMap to configure the connection to the Ops Manager endpoint and Project.  The Project will be created if it doesn't exist and this is where MongoDB objects managed by Kubernetes will reside.
 
 ```bash
 kubectl create configmap ops-manager-connection \
