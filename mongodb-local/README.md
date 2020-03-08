@@ -108,7 +108,7 @@ kubectl create secret generic ops-manager-admin-secret \
 -n mongodb
 ```
 
-Ensure `mongodb-ops-manager.yml` has `NodePort` configured for external connectivity and you disable backup for Ops Manager. Not a best practice but we're running on Minikube and resources locally are precious :gem:.
+Ensure `mongodb-ops-manager.yml` has `NodePort` configured for external connectivity and you disable backup for Ops Manager. Not a best practice but we're running on Minikube and resources are precious :gem:.
 
 ```yaml
   externalConnectivity:
