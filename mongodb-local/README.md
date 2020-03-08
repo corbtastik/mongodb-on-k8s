@@ -143,7 +143,7 @@ kubectl -n mongodb get node -o wide
 kubectl -n mongodb get service ops-manager-svc-ext
 ```
 
-Walk through the Ops Manager setup, accepting the defaults.  Once complete you'll have an Ops Manager almost ready to deal.
+Walk through the Ops Manager setup, accepting defaults.  Once complete you'll have an Ops Manager almost ready to deal :spades:
 
 ## Configure MongoDB Operator with Ops Manager API Key
 
