@@ -1,0 +1,15 @@
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: data-nfs-server-provisioner-0
+spec:
+  capacity:
+    storage: 72Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /srv/volumes/data-nfs-server-provisioner-0
+  claimRef:
+    namespace: default
+    name: data-nfs-server-provisioner-0

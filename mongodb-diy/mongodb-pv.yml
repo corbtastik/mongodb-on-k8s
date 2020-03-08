@@ -4,14 +4,14 @@ metadata:
     name: mongodb-pv
 spec:
   capacity:
-    storage: 16Gi
+    storage: 64Gi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
+  persistentVolumeReclaimPolicy: Retain
   storageClassName: mongodb-default-storageclass
   local:
-    path: /data/mongodb-standalone # has to exist on worker node
+    path: /data
   nodeAffinity:
     required:
       nodeSelectorTerms: # choose a nodeSelector

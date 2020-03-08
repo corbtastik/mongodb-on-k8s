@@ -1,0 +1,136 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2020-02-21T03:44:38Z"
+  generateName: nfs-server-provisioner-
+  labels:
+    app: nfs-server-provisioner
+    chart: nfs-server-provisioner-1.0.0
+    controller-revision-hash: nfs-server-provisioner-56b5679d44
+    heritage: Helm
+    release: nfs-server-provisioner
+    statefulset.kubernetes.io/pod-name: nfs-server-provisioner-0
+  name: nfs-server-provisioner-0
+  namespace: default
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: StatefulSet
+    name: nfs-server-provisioner
+    uid: 483b9a1d-026c-40f8-aaad-ca7e1e4066a8
+  resourceVersion: "387853"
+  selfLink: /api/v1/namespaces/default/pods/nfs-server-provisioner-0
+  uid: 60e4d5b7-d91b-4b33-b906-66aaea95fdbc
+spec:
+  containers:
+  - args:
+    - -provisioner=cluster.local/nfs-server-provisioner
+    env:
+    - name: POD_IP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.podIP
+    - name: SERVICE_NAME
+      value: nfs-server-provisioner
+    - name: POD_NAMESPACE
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.namespace
+    image: quay.io/kubernetes_incubator/nfs-provisioner:v2.3.0
+    imagePullPolicy: IfNotPresent
+    name: nfs-server-provisioner
+    ports:
+    - containerPort: 2049
+      name: nfs
+      protocol: TCP
+    - containerPort: 2049
+      name: nfs-udp
+      protocol: UDP
+    - containerPort: 32803
+      name: nlockmgr
+      protocol: TCP
+    - containerPort: 32803
+      name: nlockmgr-udp
+      protocol: UDP
+    - containerPort: 20048
+      name: mountd
+      protocol: TCP
+    - containerPort: 20048
+      name: mountd-udp
+      protocol: UDP
+    - containerPort: 875
+      name: rquotad
+      protocol: TCP
+    - containerPort: 875
+      name: rquotad-udp
+      protocol: UDP
+    - containerPort: 111
+      name: rpcbind
+      protocol: TCP
+    - containerPort: 111
+      name: rpcbind-udp
+      protocol: UDP
+    - containerPort: 662
+      name: statd
+      protocol: TCP
+    - containerPort: 662
+      name: statd-udp
+      protocol: UDP
+    resources: {}
+    securityContext:
+      capabilities:
+        add:
+        - DAC_READ_SEARCH
+        - SYS_RESOURCE
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /export
+      name: data
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: nfs-server-provisioner-token-c7f56
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  hostname: nfs-server-provisioner-0
+  nodeSelector:
+    kubernetes.io/hostname: kubeone
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: nfs-server-provisioner
+  serviceAccountName: nfs-server-provisioner
+  subdomain: nfs-server-provisioner
+  terminationGracePeriodSeconds: 100
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: data-nfs-server-provisioner-0
+  - name: nfs-server-provisioner-token-c7f56
+    secret:
+      defaultMode: 420
+      secretName: nfs-server-provisioner-token-c7f56
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2020-02-21T03:44:38Z"
+    message: 'error while running "VolumeBinding" filter plugin for pod "nfs-server-provisioner-0":
+      pod has unbound immediate PersistentVolumeClaims'
+    reason: Unschedulable
+    status: "False"
+    type: PodScheduled
+  phase: Pending
+  qosClass: BestEffort

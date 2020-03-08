@@ -1,0 +1,8 @@
+persistence:
+  enabled: true
+  storageClass: "-"
+  size: 64Gi
+storageClass:
+  defaultClass: true
+nodeSelector:
+  kubernetes.io/hostname: kubeone
