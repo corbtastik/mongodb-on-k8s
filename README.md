@@ -10,7 +10,7 @@ The MongoDB Enterprise Operator for Kubernetes allows devOps teams to:
 
 Demo Guides
 
-* [Local Box using Minikube](./mongodb-local/README.md)
+* [Local using Minikube](./LOCAL.md)
 * [GKE](./GKE.md)
 * [EKS](./EKS.md)
 
