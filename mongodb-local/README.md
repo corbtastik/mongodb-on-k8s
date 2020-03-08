@@ -8,7 +8,7 @@ _It also might be good to consider using [VMware Fusion](https://www.vmware.com/
 
 ## TOC
 
-* [Install Required Infra](./install-required-infra)
+* [Install Required Infra](#install-required-infra)
 * [Deploy Operator](./deploy-operator)
 * [Deploy MongoDB Ops Manager](./deploy-mongodb-ops-manager)
 * [Connect Operator with Ops Manager](./connect-operator-with-ops-manager)
