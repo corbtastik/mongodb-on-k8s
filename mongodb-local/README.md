@@ -9,10 +9,10 @@ _It also might be good to consider using [VMware Fusion](https://www.vmware.com/
 ## TOC
 
 * [Install Required Infra](#install-required-infra)
-* [Deploy Operator](./deploy-operator)
-* [Deploy MongoDB Ops Manager](./deploy-mongodb-ops-manager)
-* [Connect Operator with Ops Manager](./connect-operator-with-ops-manager)
-* [Deploy MongoDB with the Operator](./deploy-mongodb-with-the-operator)
+* [Deploy Operator](#deploy-operator)
+* [Deploy MongoDB Ops Manager](#deploy-mongodb-ops-manager)
+* [Connect Operator with Ops Manager](#connect-operator-with-ops-manager)
+* [Deploy MongoDB with the Operator](#deploy-mongodb-with-the-operator)
 
 ## Install Required Infra
 
@@ -54,10 +54,10 @@ MongoDB shell version v4.2.3
 
 ## Deploy Operator
 
-* [Configure and Start Minikube](./configure-and-start-minikube)
-* [Create mongodb namespace](./create-mongodb-namespace)
-* [Apply MongoDB Custom Resource Definitions](./apply-mongodb-custom-resource-definitions)
-* [Deploy MongoDB Operator](./deploy-mongodb-operator)
+* [Configure and Start Minikube](#configure-and-start-minikube)
+* [Create mongodb namespace](#create-mongodb-namespace)
+* [Apply MongoDB Custom Resource Definitions](#apply-mongodb-custom-resource-definitions)
+* [Deploy MongoDB Operator](#deploy-mongodb-operator)
 
 ### Configure and Start Minikube
 
@@ -115,10 +115,10 @@ At this point the Operator deployment is running and we can now use it to deploy
 
 **Note:** Deploying Ops Manager with the Operator is currently in beta (03/01/2020) but we're doing so because having everything run in K8s is a bit convenient and cool. :sunglasses:
 
-* [Configure Ops Manager Deployment](./configure-ops-manager-deployment)
-* [Deploy Ops Manager](./deploy-ops-manager)
-* [Setup Ops Manager](./setup-ops-manager)
-* [Cleanup Ops Manager admin Secret](./cleanup-ops-manager-admin-secret)
+* [Configure Ops Manager Deployment](#configure-ops-manager-deployment)
+* [Deploy Ops Manager](#deploy-ops-manager)
+* [Setup Ops Manager](#setup-ops-manager)
+* [Cleanup Ops Manager admin Secret](#cleanup-ops-manager-admin-secret)
 
 ### Configure Ops Manager Deployment
 
@@ -184,8 +184,8 @@ kubectl delete secret ops-manager-admin-secret -n mongodb
 
 ## Connect Operator with Ops Manager
 
-* [Configure Ops Manager API Key](./configure-ops-manager-api-key)
-* [Configure Ops Manager Connection](./configure-ops-manager-connection)
+* [Configure Ops Manager API Key](#configure-ops-manager-api-key)
+* [Configure Ops Manager Connection](#configure-ops-manager-connection)
 
 ### Configure Ops Manager API Key
 
@@ -220,8 +220,8 @@ kubectl create configmap ops-manager-connection \
 
 ## Deploy MongoDB with the Operator
 
-* [Deploy Standalone MongoDB](./deploy-standalone-mongodb)
-* [Connect to database](./connect-to-database)
+* [Deploy Standalone MongoDB](#deploy-standalone-mongodb)
+* [Connect to database](#connect-to-database)
 
 ### Deploy Standalone MongoDB
 
