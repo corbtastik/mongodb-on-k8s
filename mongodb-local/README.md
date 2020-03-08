@@ -134,7 +134,14 @@ ops-manager-db-1            1/1    Running            0         8m24s
 ops-manager-db-2            1/1    Running            0         7m48s
 ```
 
-Open MongoDB Ops Manager and login with the `ops-manager-admin-secret` creds above.  To get the right endpoint for Ops Manager retrieve the node's INTERNAL-IP and NodePort.
+
+Remove the `ops-manager-admin-secret` secret from Kubernetes because you remember it right?
+
+```bash
+kubectl delete secret ops-manager-admin-secret -n mongodb
+```
+
+Open MongoDB Ops Manager at ``http://INTERNAL-IP:NODE-PORT`` and login with the `ops-manager-admin-secret` creds above.  To get the right endpoint for Ops Manager retrieve the node's INTERNAL-IP and NodePort.
 
 ```bash
 # remember INTERNAL-IP
@@ -143,19 +150,7 @@ kubectl -n mongodb get node -o wide
 kubectl -n mongodb get service ops-manager-svc-ext
 ```
 
-Open a Browser to ``http://INTERNAL-IP:NODE-PORT``
-
-![Ops Manager Login](/assets/OpsManagerLogin.png)
-
-Remove the `ops-manager-admin-secret` secret from Kubernetes because you remember it right?
-
-```bash
-kubectl delete secret ops-manager-admin-secret -n mongodb
-```
-
 Walk through the Ops Manager setup, accepting the defaults.  Once complete you'll have an Ops Manager almost ready to deal.
-
-![Ops Manager Login](/assets/OpsManagerOverview.png)
 
 ## Configure MongoDB Operator with Ops Manager API Key
 
