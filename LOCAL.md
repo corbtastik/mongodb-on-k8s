@@ -7,7 +7,9 @@ The MongoDB Enterprise Operator for Kubernetes allows devOps teams to:
 * Deploy and run MongoDB Ops Manager on K8s  
 * Deploy and manage MongoDB clusters on K8s
 
-_The demo environment runs on Minikube and can be taxing to a MacBook, as such it's recommended to shutdown non-essentials for the best experience (close those Chrome tabs?)_ 🤔
+_The demo environment runs on Minikube and can be taxing to a MacBook, as such it's recommended to shutdown non-essentials for the best experience (close those Chrome tabs?)._ 🤔
+
+_It also might be good to consider using [VMware Fusion](https://www.vmware.com/products/fusion/fusion-evaluation.html) over VirtualBox which will improve your experience running VMs locally._
 
 ## TOC
 
