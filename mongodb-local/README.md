@@ -13,6 +13,9 @@ _It also might be good to consider using [VMware Fusion](https://www.vmware.com/
 * [Deploy MongoDB Ops Manager](#deploy-mongodb-ops-manager)
 * [Connect Operator with Ops Manager](#connect-operator-with-ops-manager)
 * [Deploy MongoDB with the Operator](#deploy-mongodb-with-the-operator)
+* [Teardown](#teardown)
+* [Downloads](#downloads)
+* [References](#references)
 
 ## Install Required Infra
 
@@ -61,7 +64,7 @@ MongoDB shell version v4.2.3
 
 ### Configure and Start Minikube
 
-Configure cpu, memory and vm-driver for your tastes and run `start.sh` to boot Minikube.
+For the best experience you'll need at least 8 GB to 10 GB of ram allocated to Minikube.
 
 ```bash
 # start.sh
