@@ -14,9 +14,6 @@ _It also might be good to consider using [VMware Fusion](https://www.vmware.com/
 * [Connect Operator with Ops Manager](#connect-operator-with-ops-manager)
 * [Deploy MongoDB with the Operator](#deploy-mongodb-with-the-operator)
 
-## collapsible markdown?
-
-<details><summary>CLICK ME</summary>
 ## Install Required Infra
 
 Install the following tools on your MacBook.  There's several ways to install and setup each of these so pick a method that works for you.  Install options are documented in the links below.
@@ -54,8 +51,6 @@ $ kubectl version -o json
 $ mongo --version
 MongoDB shell version v4.2.3
 ```
-</p>
-</details>
 
 ## Deploy Operator
 
