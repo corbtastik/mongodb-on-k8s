@@ -14,21 +14,24 @@ _It also might be good to consider using [VMware Fusion](https://www.vmware.com/
 * [Connect Operator with Ops Manager](#connect-operator-with-ops-manager)
 * [Deploy MongoDB with the Operator](#deploy-mongodb-with-the-operator)
 
+## collapsible markdown?
+
+<details><summary>CLICK ME</summary>
 ## Install Required Infra
 
 Install the following tools on your MacBook.  There's several ways to install and setup each of these so pick a method that works for you.  Install options are documented in the links below.
 
-* [VirtualBox (v6.0)](https://www.virtualbox.org/wiki/Download_Old_Builds_6_0) - Required for virtualization substrate
-* [Minikube (v1.6.x)](https://minikube.sigs.k8s.io/docs/start/) - VM running Kubernetes
-* [Kubectl (v1.17.x)](https://kubernetes.io/docs/tasks/tools/install-kubectl/) for interacting with Kubernetes
-* [MongoDB Enterprise (v4.2.x)](https://www.mongodb.com/download-center/enterprise) - Installed locally for mongo client
+* [VirtualBox v6.x](https://www.virtualbox.org/wiki/Downloads) - Required for virtualization substrate
+* [Minikube v1.6+](https://minikube.sigs.k8s.io/docs/start/) - VM running Kubernetes
+* [Kubectl v1.15.x](https://kubernetes.io/docs/tasks/tools/install-kubectl/) for interacting with Kubernetes
+* [MongoDB Enterprise v4.2.x](https://www.mongodb.com/download-center/enterprise) - Installed locally for mongo client
 
 You should be able to resolve each from the command line.
 
 ```bash
 # virtualbox version
 $ vboxmanage --version
-6.0.16r135674
+6.1.2r135662
 
 $ minikube version
 minikube version: v1.6.2
@@ -37,12 +40,12 @@ $ kubectl version -o json
 {
   "clientVersion": {
     "major": "1",
-    "minor": "17",
-    "gitVersion": "v1.17.2",
-    "gitCommit": "59603c6e503c87169aea6106f57b9f242f64df89",
+    "minor": "15",
+    "gitVersion": "v1.15.0",
+    "gitCommit": "e8462b5b5dc2584fdcd18e6bcfe9f1e4d970a529",
     "gitTreeState": "clean",
-    "buildDate": "2020-01-18T23:30:10Z",
-    "goVersion": "go1.13.5",
+    "buildDate": "2019-06-19T16:40:16Z",
+    "goVersion": "go1.12.5",
     "compiler": "gc",
     "platform": "darwin/amd64"
   }
@@ -51,6 +54,8 @@ $ kubectl version -o json
 $ mongo --version
 MongoDB shell version v4.2.3
 ```
+</p>
+</details>
 
 ## Deploy Operator
 
@@ -269,7 +274,7 @@ MongoDB Enterprise > exit
 
 ## Teardown
 
-Save a :evergreen_tree:...run the commands below to uninstall all Service Instances, remove the Atlas OSB and Service Catalog.
+Save a :evergreen_tree:...run the commands below to uninstall everything.
 
 ```bash
 kubectl delete ns mongodb
