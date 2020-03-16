@@ -3,6 +3,8 @@ kind: MongoDBOpsManager
 metadata:
   name: ops-manager
   namespace: mongodb
+  labels:
+    provider: gcp  
 spec:
   # the version of Ops Manager distro to use
   version: 4.2.4

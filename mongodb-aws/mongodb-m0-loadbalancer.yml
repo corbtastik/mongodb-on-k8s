@@ -5,6 +5,7 @@ metadata:
   namespace: mongodb
   labels:
     app: m0-standalone-svc
+    provider: aws
 spec:
   externalTrafficPolicy: Cluster
   ports:

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: m2-sharded-cluster-svc-ext
+  namespace: mongodb
+  labels:
+    app: m2-sharded-cluster-svc
+    provider: aws
+spec:
+  selector:
+    app: m2-sharded-cluster-svc
+    statefulset.kubernetes.io/pod-name: m2-sharded-cluster-mongos-0
+  type: LoadBalancer
+  ports:
+  - port: 27017
+    targetPort: 27017

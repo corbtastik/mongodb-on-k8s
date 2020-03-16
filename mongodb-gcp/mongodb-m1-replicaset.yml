@@ -3,6 +3,8 @@ kind: MongoDB
 metadata:
   name: m1-replica-set
   namespace: mongodb
+  labels:
+    provider: gcp  
 spec:
   members: 3
   version: 4.2.3-ent

@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: m1-replica-set-svc-ext
   namespace: mongodb
+  labels:
+    provider: gcp
 spec:
   selector:
     app: m1-replica-set-svc

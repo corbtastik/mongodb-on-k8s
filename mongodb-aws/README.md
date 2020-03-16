@@ -105,7 +105,7 @@ Create a namespace for all MongoDB assets.
 $ kubectl create namespace mongodb
 ```
 
-Create Custom Resource Definitions for objects we're going to provision with the Operator.
+Create Custom Resource Definitions for objects we're gonna use with the Operator.
 
 * MongoDB - K8s resource for MongoDB objects such as Standalone, ReplicaSet and ShardedClusters
 * MongoDBUser - K8s resource for MongoDB users

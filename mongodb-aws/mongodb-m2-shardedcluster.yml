@@ -3,6 +3,8 @@ kind: MongoDB
 metadata:
   name: m2-sharded-cluster
   namespace: mongodb
+  labels:
+    provider: aws
 spec:
   shardCount: 2
   mongodsPerShardCount: 3
