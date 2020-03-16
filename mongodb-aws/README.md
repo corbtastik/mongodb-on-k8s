@@ -1,6 +1,6 @@
 # MongoDB on EKS
 
-**Note** - This is a demo kit and not intended for production use in any way, its intended for simple demos and general knowledge...and perhaps for having some cooleo nerd fun :sunglasses:.
+**Note** - This is a demo kit and not intended for production use in any way, its intended for simple demos and general knowledge...and perhaps for having some cooleo nerd fun :sunglasses:.  Consider this a "Hello World".
 
 This document describes how to demo the [MongoDB Enterprise Kubernetes Operator](https://docs.mongodb.com/kubernetes-operator) on [EKS](https://aws.amazon.com/eks/).  The goal of this demo is to reinforce the Freedom to Run Anywhere by showing how easy it is to deploy, run and consume MongoDB on Kubernetes on [AWS](https://aws.amazon.com/) EKS.
 
@@ -52,18 +52,17 @@ $ kubectl version -o json
 {
   "clientVersion": {
     "major": "1",
-    "minor": "17",
-    "gitVersion": "v1.17.2",
-    "gitCommit": "59603c6e503c87169aea6106f57b9f242f64df89",
+    "minor": "15",
+    "gitVersion": "v1.15.0",
+    "gitCommit": "e8462b5b5dc2584fdcd18e6bcfe9f1e4d970a529",
     "gitTreeState": "clean",
-    "buildDate": "2020-01-18T23:30:10Z",
-    "goVersion": "go1.13.5",
+    "buildDate": "2019-06-19T16:40:16Z",
+    "goVersion": "go1.12.5",
     "compiler": "gc",
     "platform": "darwin/amd64"
   }
 }
 
-# mongo client used to mongo on.
 $ mongo --version
 MongoDB shell version v4.2.3
 ```

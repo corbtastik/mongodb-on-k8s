@@ -72,7 +72,7 @@ For the best experience you'll need at least 8 GB to 10 GB of ram allocated to M
 minikube start --vm-driver=virtualbox \
   --cpus=4 \       # as much as you can give
   --memory=10240 \ # ditto
-  --disk-size=64g \
+  --disk-size=32g \
   --mount-string="$HOME/data:/data" \
   --kubernetes-version=1.15.10  
 ```
