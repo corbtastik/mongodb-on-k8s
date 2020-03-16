@@ -95,7 +95,7 @@ ip-192-168-87-68.us-west-2.compute.internal   Ready    <none>   34m   v1.14.8-ek
 ip-192-168-9-208.us-west-2.compute.internal   Ready    <none>   34m   v1.14.8-eks-b8860f
 ```
 
-This concludes AWS infra, in certain demo scenarios you could pre-prep all of this and start with the MongoDB section below.  Now on to the good stuff.
+This concludes AWS infra, in most demo scenarios you'll pre-prep all of this and start with the MongoDB section below.  Now on to the good stuff.
 
 ## Install MongoDB Enterprise Kubernetes Operator
 
