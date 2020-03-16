@@ -25,9 +25,7 @@ The [MongoDB Enterprise Operator for Kubernetes](https://docs.mongodb.com/kubern
 
 There are several ways to get started with EKS so feel free to choose a method that works for you.  In this demo kit we use [eksctl](https://eksctl.io/) to provision Kubernetes assets on AWS.
 
-**Note** - There are 2 versions of the AWS CLI at this time v1 and v2. [This guide uses v1](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv1.html).
-
-* [AWS CLI v1](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv1.html) - for interacting with AWS
+* [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv1.html) - for interacting with AWS
 * [eksctl](https://docs.aws.amazon.com/eks/latest/userguide/getting-started-eksctl.html) - for interacting with EKS (includes docs for installing AWS CLI and aws-iam-authenticator as well).
 * [Kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) - for interacting with Kubernetes
 * [MongoDB Enterprise](https://www.mongodb.com/download-center/enterprise) - Installed locally for mongo client
