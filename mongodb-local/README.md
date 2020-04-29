@@ -64,14 +64,14 @@ MongoDB shell version v4.2.3
 
 ### Configure and Start Minikube
 
-For the best experience you'll need at least 8 GB to 10 GB of ram allocated to Minikube.
+For the best experience you'll need at least 8 GB to 10 GB of ram allocated to Minikube. Give as much as you can for both CPU and Memory!
 
 ```bash
 # start.sh
 # use --vm-driver=vmware if you have VMware Fusion installed
 minikube start --vm-driver=virtualbox \
-  --cpus=4 \       # as much as you can give
-  --memory=10240 \ # ditto
+  --cpus=4 \
+  --memory=10240 \
   --disk-size=32g \
   --mount-string="$HOME/data:/data" \
   --kubernetes-version=1.15.10  
@@ -136,26 +136,39 @@ kubectl create secret generic ops-manager-admin-secret \
 -n mongodb
 ```
 
-Ensure `mongodb-ops-manager.yml` has `NodePort` configured for external connectivity and you disable backup for Ops Manager. Not a best practice but we're running on Minikube and resources are precious. :gem:
-
-```yaml
-  externalConnectivity:
-    type: NodePort
-  backup:
-    enabled: false    
-```
-
 ### Deploy Ops Manager
 
-Deploy MongoDB Ops Manager in a Pod as well as a 3 member MongoDB ReplicaSet for the Ops Manager application database.  Startup time will vary based on Hardware and quota given to Minikube, however expect to wait 5-10 mins for everything to reach Running status.
+In this section, we will deploy MongoDB Ops Manager in a Pod as well as a 3 member MongoDB Replica Set for the Ops Manager Database. 
 
+Download the MongoDB Ops Manager configuration file from [here](./mongodb-ops-manager.yml) in the repo (or use the curl command in the script below).
+
+**Note:** The yaml file specifies that NodePort will be used for external connectivity, and that backup is disabled - these are not best practices, but recommended given we're running on Minikube and resources are precious.
+
+First, download the configuration file from the repo (if you didn't download it manually above):
+
+```bash
+curl -O https://raw.githubusercontent.com/corbtastik/mongodb-on-k8s/master/mongodb-local/mongodb-ops-manager.yml
+```
+
+Now, apply the configuration using the following command: 
 
 ```bash
 kubectl apply -f mongodb-ops-manager.yml
-# wait a few mins for the objects to create
+```
+
+**Note:** Startup time will vary based on Hardware and quota given to Minikube, however expect to wait at least 5-10 mins for everything to reach Running status.
+
+To monitor progress by using the following command (note: it will take at least 5-10 minutes to complete):
+
+```bash
 kubectl -n mongodb get om -w
-# should have these objects
+```
+
+Once the deployment is complete, you can run the following command and validate the output against what's shown below to confirm that it has executed successfully:
+
+```bash
 kubectl -n mongodb get pods -o wide  
+
 NAME                        READY  STATUS             RESTARTS  AGE
 mongodb-enterprise-operator 1/1    Running            0         62m
 ops-manager-0               1/1    Running            0         7m3s
@@ -166,16 +179,24 @@ ops-manager-db-2            1/1    Running            0         7m48s
 
 ### Setup Ops Manager
 
-Open MongoDB Ops Manager at ``http://INTERNAL-IP:NODE-PORT`` and login with the `ops-manager-admin-secret` creds above.  To get the right endpoint for Ops Manager retrieve the node's INTERNAL-IP and NodePort.
+Next we will opne Ops Manager in our browser in order to complete the Ops Manager setup. In order to do that, we need the IP/Port that map to the Ops Manager Pod. 
 
+In order to find that, you need to find the IP address for the Kubernetes master node, and the port which maps onto the Ops Manager Service. 
+
+You can get these by executing the following commands:
 ```bash
-# get INTERNAL-IP
-kubectl -n mongodb get node -o wide
-# get high-side NODE-PORT, should be something like 3xxxx
+# Kubernetes Master IP
+minikube ip
+
+# Port mapped to MongoDB Ops Manager service (should be something like 3xxxx)
 kubectl -n mongodb get service ops-manager-svc-ext
 ```
 
-Walk through the Ops Manager setup, accepting defaults.  Once complete you'll have an Ops Manager almost ready to deal :spades:
+Open MongoDB Ops Manager at in your browser at ``http://MASTER-IP:NODE-PORT`` and login with the `ops-manager-admin-secret` credentials we defined above.
+
+Walk through the Ops Manager setup, accepting defaults. You wil need to add some dummy values for the email server settings. 
+
+Once complete you'll have an Ops Manager almost ready to deal :spades:
 
 ### Cleanup Ops Manager admin Secret
 
@@ -206,7 +227,7 @@ Once the API Key is generated we need to create a Kubernetes Secret containing t
 ```bash
 kubectl create secret generic om-main-user-credentials \
   --from-literal="user=admin@opsmanager.com" \
-  --from-literal="publicApiKey=ec19ba1c-b63f-4ac4-a55a-d09cca21067d" \
+  --from-literal="publicApiKey=<your-api-key>" \
   -n mongodb
 ```
 
@@ -230,9 +251,13 @@ kubectl create configmap ops-manager-connection \
 
 At this point Ops Manager is integrated with the Operator and ready to provision MongoDB instances.  Since this demo is on Minikube we'll just deploy a standalone MongoDB instance because you likely don't have enough headroom to deploy anything else on that little ole MacBook. :computer:
 
+You can download the sample template file [here](./mongodb-m0-standalone.yml), or using the cURL command below.
+
 ```bash
+curl -O https://raw.githubusercontent.com/corbtastik/mongodb-on-k8s/master/mongodb-local/mongodb-m0-standalone.yml
 kubectl apply -f mongodb-m0-standalone.yml
-# wait for database to come up
+
+# Monitor and wait for database to come up
 kubectl -n mongodb get mdb  -w
 ```
 
@@ -241,7 +266,7 @@ kubectl -n mongodb get mdb  -w
 Get the IP of our Master node and the NodePort exposing our Standalone MongoDB instance.
 
 ```bash
-# get IP of master Kubernetes node (the only node in Minikube)
+# get IP of master Kubernetes node (the only node in Minikube) as you did previously
 minikube ip
 172.16.182.132
 # get NodePort of m0-standalone-svc-external (31793 below)
@@ -270,15 +295,33 @@ MongoDB Enterprise > db.todos.find({complete: true}, {_id:0})
 MongoDB Enterprise > exit
 ```
 
+## SA Mindtickle Module
+
+If you are completing this exercise as part of an SA Mindtickle Module, run the following commands in order to generate the output required to submit in Mindtickle itself:
+```bash
+kubectl get -o=yaml mongodb.mongodb.com,\
+opsmanagers.mongodb.com,\
+mongodbusers.mongodb.com,\
+cm,\
+secrets,\
+pods 
+```
+
 ## Teardown
 
-Save a :evergreen_tree:...run the commands below to uninstall everything.
+Save a :evergreen_tree:...run the commands below to uninstall all of the Kubernetes components
 
 ```bash
 kubectl delete ns mongodb
 kubectl delete crd mongodb.mongodb.com
 kubectl delete crd mongodbusers.mongodb.com
 kubectl delete crd opsmanagers.mongodb.com
+```
+
+Finally to remove the minikube VM, run the following command:
+
+```bash
+minikube delete
 ```
 
 ## Downloads
